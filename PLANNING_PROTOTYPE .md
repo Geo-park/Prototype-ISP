@@ -150,14 +150,14 @@ leaflet
 - [ ] Buat shared component: Sidebar, Navbar, StatsCard, DataTable, BadgeStatus
 
 ### Dev B
-- [ ] Setup Vite + Vue 3
-- [ ] Install Tailwind CSS
-- [ ] Install Vue Router
-- [ ] Install Pinia
-- [ ] Install Chart.js + vue-chartjs
-- [ ] Install Leaflet + @vue-leaflet/vue-leaflet
-- [ ] Setup struktur folder frontend
-- [ ] Setup axios + base API config
+- [x] Setup Vite + Vue 3
+- [x] Install Tailwind CSS
+- [x] Install Vue Router
+- [x] Install Pinia
+- [x] Install Chart.js + vue-chartjs
+- [x] Install Leaflet + @vue-leaflet/vue-leaflet
+- [x] Setup struktur folder frontend
+- [x] Setup axios + base API config
 
 ---
 
