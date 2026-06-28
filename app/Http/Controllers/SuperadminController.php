@@ -87,4 +87,22 @@ class SuperadminController extends Controller
             ['aksi' => 'Status koneksi Ahmad dimatikan', 'waktu' => now()->subHours(5)],
         ]);
     }
+
+    public function statistikDaerah()
+    {
+        $daerahs = Pelanggan::select('daerah')
+            ->distinct()
+            ->pluck('daerah');
+
+        $data = $daerahs->map(function ($daerah) {
+            return [
+                'daerah'   => $daerah,
+                'aktif'    => Pelanggan::where('daerah', $daerah)->where('status', 'aktif')->count(),
+                'nonaktif' => Pelanggan::where('daerah', $daerah)->where('status', 'nonaktif')->count(),
+                'total'    => Pelanggan::where('daerah', $daerah)->count(),
+            ];
+        });
+
+        return response()->json($data);
+    }
 }

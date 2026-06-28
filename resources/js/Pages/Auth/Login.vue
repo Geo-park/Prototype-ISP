@@ -27,8 +27,9 @@ const submit = () => {
 const loginAs = (role) => {
     const accounts = {
         superadmin: { email: 'superadmin@demo.com', password: 'demo1234' },
-        admin: { email: 'admin@demo.com', password: 'demo1234' },
-        user: { email: 'budi@demo.com', password: 'demo1234' },
+        admin:      { email: 'admin@demo.com', password: 'demo1234' },
+        adminJkt:   { email: 'admin.jakarta@demo.com', password: 'demo1234' },
+        user:       { email: 'budi@demo.com', password: 'demo1234' },
     }
     form.email = accounts[role].email
     form.password = accounts[role].password
@@ -109,7 +110,11 @@ const loginAs = (role) => {
                 </button>
                 <button @click="loginAs('admin')"
                     class="flex-1 text-xs bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">
-                    Admin
+                    Admin Banten
+                </button>
+                <button @click="loginAs('adminJkt')"
+                    class="flex-1 text-xs bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700">
+                    Admin Jakarta
                 </button>
                 <button @click="loginAs('user')"
                     class="flex-1 text-xs bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700">

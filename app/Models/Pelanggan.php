@@ -13,6 +13,7 @@ class Pelanggan extends Model
         'no_pelanggan',
         'nama',
         'alamat',
+        'daerah',
         'no_wa',
         'paket_id',
         'status',

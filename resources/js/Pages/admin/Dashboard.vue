@@ -21,8 +21,20 @@
 
             <!-- Tabel Pelanggan -->
             <div class="bg-white rounded-lg shadow p-4 mb-6">
-                <h2 class="font-semibold mb-4">Daftar Pelanggan</h2>
-                <table class="w-full text-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold">Daftar Pelanggan</h2>
+                    <Link href="/admin/pelanggan/tambah"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+                        + Tambah Pelanggan
+                    </Link>
+                </div>
+                <table class="w-full text-sm table-fixed">
+                    <colgroup>
+                        <col class="w-1/3" />
+                        <col class="w-1/3" />
+                        <col style="width: 110px" />
+                        <col style="width: 100px" />
+                    </colgroup>
                     <thead>
                         <tr class="text-left border-b">
                             <th class="pb-2">Nama</th>
@@ -36,21 +48,20 @@
                             <td class="py-2">{{ p.nama }}</td>
                             <td class="py-2">{{ p.paket?.nama }}</td>
                             <td class="py-2">
-                                <span :class="p.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                                    class="px-2 py-1 rounded-full text-xs">
+                                <span
+                                    :class="p.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                    class="inline-block w-20 text-center px-2 py-1 rounded-full text-xs font-medium">
                                     {{ p.status }}
                                 </span>
                             </td>
-                            <td class="py-2 space-x-2">
-                                <button v-if="p.status === 'aktif'"
-                                    @click="matikanKoneksi(p.id)"
-                                    class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                                    Matikan
-                                </button>
-                                <button v-else
-                                    @click="hidupkanKoneksi(p.id)"
-                                    class="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
-                                    Hidupkan
+                            <td class="py-2">
+                                <button
+                                    @click="p.status === 'aktif' ? matikanKoneksi(p.id) : hidupkanKoneksi(p.id)"
+                                    :class="p.status === 'aktif'
+                                        ? 'bg-red-500 hover:bg-red-600'
+                                        : 'bg-green-500 hover:bg-green-600'"
+                                    class="text-xs text-white w-20 py-1 rounded text-center transition-colors duration-150">
+                                    {{ p.status === 'aktif' ? 'Matikan' : 'Hidupkan' }}
                                 </button>
                             </td>
                         </tr>
@@ -58,16 +69,50 @@
                 </table>
             </div>
 
-            <!-- Tiket Aktif -->
+            <!-- Laporan Keluhan -->
             <div class="bg-white rounded-lg shadow p-4">
-                <h2 class="font-semibold mb-4">Tiket Aktif</h2>
+                <h2 class="font-semibold mb-4">Laporan Keluhan</h2>
                 <ul class="space-y-2">
-                    <li v-for="tiket in tiketAktif" :key="tiket.id"
-                        class="text-sm border-b pb-2 flex justify-between">
-                        <span>{{ tiket.judul }} — {{ tiket.pelanggan }}</span>
-                        <span class="text-yellow-600 text-xs">{{ tiket.status }}</span>
+                    <li v-for="laporan in laporanKeluhan" :key="laporan.id"
+                        class="text-sm border-b pb-2 flex justify-between items-center">
+                        <span>{{ laporan.judul }} — {{ laporan.pelanggan }}</span>
+                        <button @click="bukaModal(laporan)"
+                            class="text-xs bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
+                            open
+                        </button>
                     </li>
                 </ul>
+            </div>
+
+            <!-- Modal Laporan -->
+            <div v-if="modalLaporan" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="font-bold text-lg">Detail Laporan</h2>
+                        <button @click="modalLaporan = null" class="text-gray-400 hover:text-gray-600">✕</button>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p><span class="text-gray-500">ID:</span> #{{ modalLaporan.id }}</p>
+                        <p><span class="text-gray-500">Judul:</span> {{ modalLaporan.judul }}</p>
+                        <p><span class="text-gray-500">Pelanggan:</span> {{ modalLaporan.pelanggan }}</p>
+                        <p><span class="text-gray-500">Status:</span>
+                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs ml-1">
+                                {{ modalLaporan.status }}
+                            </span>
+                        </p>
+                        <p><span class="text-gray-500">Deskripsi:</span> {{ modalLaporan.deskripsi }}</p>
+                    </div>
+                    <div class="mt-4 flex gap-2">
+                        <button @click="modalLaporan = null"
+                            class="flex-1 bg-gray-100 text-gray-700 py-2 rounded hover:bg-gray-200 text-sm">
+                            Tutup
+                        </button>
+                        <button @click="modalLaporan = null"
+                            class="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700 text-sm">
+                            Tandai Selesai
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </AdminLayout>
@@ -75,6 +120,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Link } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import axios from 'axios'
 
@@ -84,30 +130,37 @@ const stats = ref({
     tagihan_pending: 0,
 })
 const pelanggan = ref([])
-const tiketAktif = ref([])
+const laporanKeluhan = ref([])
+const modalLaporan = ref(null)
+
+const bukaModal = (laporan) => {
+    modalLaporan.value = laporan
+}
 
 onMounted(async () => {
-    const [statsRes, pelangganRes, tiketRes] = await Promise.all([
+    const [statsRes, pelangganRes, laporanRes] = await Promise.all([
         axios.get('/admin/stats'),
         axios.get('/admin/pelanggan'),
-        axios.get('/admin/tiket-aktif'),
+        axios.get('/admin/laporan-keluhan'),
     ])
     stats.value = statsRes.data
     pelanggan.value = pelangganRes.data
-    tiketAktif.value = tiketRes.data
+    laporanKeluhan.value = laporanRes.data
 })
 
 const matikanKoneksi = async (id) => {
     await axios.post(`/admin/koneksi/matikan/${id}`)
-    pelanggan.value = pelanggan.value.map(p =>
-        p.id === id ? { ...p, status: 'nonaktif' } : p
-    )
+    const index = pelanggan.value.findIndex(p => p.id === id)
+    if (index !== -1) {
+        pelanggan.value[index].status = 'nonaktif'
+    }
 }
 
 const hidupkanKoneksi = async (id) => {
     await axios.post(`/admin/koneksi/hidupkan/${id}`)
-    pelanggan.value = pelanggan.value.map(p =>
-        p.id === id ? { ...p, status: 'aktif' } : p
-    )
+    const index = pelanggan.value.findIndex(p => p.id === id)
+    if (index !== -1) {
+        pelanggan.value[index].status = 'aktif'
+    }
 }
 </script>

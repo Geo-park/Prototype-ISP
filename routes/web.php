@@ -32,14 +32,18 @@ Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmi
     Route::get('/status-pembayaran', [SuperadminController::class, 'statusPembayaran'])->name('status-pembayaran');
     Route::get('/invoice-terbaru', [SuperadminController::class, 'invoiceTerbaru'])->name('invoice-terbaru');
     Route::get('/aktivitas-log', [SuperadminController::class, 'aktivitasLog'])->name('aktivitas-log');
+    Route::get('/statistik-daerah', [SuperadminController::class, 'statistikDaerah'])->name('statistik-daerah');
 });
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/stats', [AdminController::class, 'stats'])->name('stats');
+    Route::get('/paket', [AdminController::class, 'paket'])->name('paket');
+    Route::get('/laporan-keluhan', [AdminController::class, 'laporanKeluhan'])->name('laporan-keluhan');
+    Route::get('/pelanggan/tambah', [AdminController::class, 'formTambahPelanggan'])->name('pelanggan.tambah');
+    Route::post('/pelanggan/tambah', [AdminController::class, 'simpanPelanggan'])->name('pelanggan.simpan');
     Route::get('/pelanggan', [AdminController::class, 'pelanggan'])->name('pelanggan');
-    Route::get('/tiket-aktif', [AdminController::class, 'tiketAktif'])->name('tiket-aktif');
     Route::post('/koneksi/matikan/{id}', [AdminController::class, 'matikanKoneksi'])->name('koneksi.matikan');
     Route::post('/koneksi/hidupkan/{id}', [AdminController::class, 'hidupkanKoneksi'])->name('koneksi.hidupkan');
 });

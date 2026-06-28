@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
             'email'    => 'superadmin@demo.com',
             'password' => Hash::make('demo1234'),
             'role'     => 'superadmin',
+            'daerah'   => null,
         ]);
 
         User::create([
@@ -22,6 +23,15 @@ class UserSeeder extends Seeder
             'email'    => 'admin@demo.com',
             'password' => Hash::make('demo1234'),
             'role'     => 'admin',
+            'daerah'   => 'Banten',
+        ]);
+
+        User::create([
+            'name'     => 'Admin Jakarta',
+            'email'    => 'admin.jakarta@demo.com',
+            'password' => Hash::make('demo1234'),
+            'role'     => 'admin',
+            'daerah'   => 'Jakarta',
         ]);
 
         // 3 user pelanggan
@@ -30,6 +40,7 @@ class UserSeeder extends Seeder
             'email'    => 'budi@demo.com',
             'password' => Hash::make('demo1234'),
             'role'     => 'user',
+            'daerah'   => 'Banten',
         ]);
 
         User::create([
@@ -37,6 +48,7 @@ class UserSeeder extends Seeder
             'email'    => 'siti@demo.com',
             'password' => Hash::make('demo1234'),
             'role'     => 'user',
+            'daerah'   => 'Jakarta',
         ]);
 
         User::create([
@@ -44,6 +56,7 @@ class UserSeeder extends Seeder
             'email'    => 'ahmad@demo.com',
             'password' => Hash::make('demo1234'),
             'role'     => 'user',
+            'daerah'   => 'Jakarta',
         ]);
     }
 }
