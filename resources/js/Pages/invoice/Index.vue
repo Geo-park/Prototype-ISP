@@ -1,5 +1,5 @@
 <template>
-    <SuperadminLayout>
+    <component :is="Layout">
         <div class="p-6">
             <h1 class="text-2xl font-bold mb-6">Daftar Invoice</h1>
 
@@ -51,17 +51,22 @@
                 </table>
             </div>
         </div>
-    </SuperadminLayout>
+    </component>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
 import SuperadminLayout from '@/Layouts/SuperadminLayout.vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
 
 const props = defineProps({
     invoices: Array,
 })
+
+const page = usePage()
+const role = computed(() => page.props.auth.user.role)
+const Layout = computed(() => role.value === 'superadmin' ? SuperadminLayout : AdminLayout)
 
 const filterStatus = ref('semua')
 

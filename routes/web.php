@@ -9,7 +9,15 @@ use Inertia\Inertia;
 
 // Welcome
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    if (auth()->check()) {
+        return match(auth()->user()->role) {
+            'superadmin' => redirect()->route('superadmin.dashboard'),
+            'admin'      => redirect()->route('admin.dashboard'),
+            'user'       => redirect()->route('user.dashboard'),
+            default      => redirect()->route('login'),
+        };
+    }
+    return redirect()->route('login');
 })->name('welcome');
 
 // Auth routes (dari Breeze)

@@ -1,5 +1,5 @@
 <template>
-    <SuperadminLayout>
+    <component :is="Layout">
         <div class="p-6 max-w-3xl mx-auto">
             <div class="mb-4">
                 <Link href="/invoice" class="text-blue-600 hover:underline text-sm">← Kembali ke Daftar Invoice</Link>
@@ -80,18 +80,23 @@
                 </div>
             </div>
         </div>
-    </SuperadminLayout>
+    </component>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
+import { ref, computed } from 'vue'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import SuperadminLayout from '@/Layouts/SuperadminLayout.vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
 import axios from 'axios'
 
 const props = defineProps({
     invoice: Object,
 })
+
+const page = usePage()
+const role = computed(() => page.props.auth.user.role)
+const Layout = computed(() => role.value === 'superadmin' ? SuperadminLayout : AdminLayout)
 
 const metodeBayar = ref('QRIS')
 const loading = ref(false)
