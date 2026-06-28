@@ -4,40 +4,107 @@
             <h1 class="text-2xl font-bold mb-6">Dashboard Pelanggan</h1>
 
             <!-- Status Koneksi -->
-            <div class="bg-white rounded-lg shadow p-6 mb-4 text-center">
-                <p class="text-gray-500 text-sm mb-2">Status Koneksi</p>
-                <span class="px-6 py-2 rounded-full text-lg font-bold bg-green-100 text-green-700">
-                    AKTIF
-                </span>
-                <p class="text-sm text-gray-500 mt-2">Paket Rumahan — 20 Mbps</p>
-                <p class="text-sm text-gray-500">Jatuh Tempo: 1 Juli 2025</p>
+            <div class="mb-4">
+                <StatusKoneksi :profil="profil" :loading="loading" />
             </div>
 
             <!-- Tagihan Aktif -->
-            <div class="bg-white rounded-lg shadow p-4 mb-4">
-                <h2 class="font-semibold mb-3">Tagihan Aktif</h2>
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-600">INV-2025-002</p>
-                        <p class="text-sm text-gray-600">Periode: 2025-06</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-bold text-blue-600">Rp 277.500</p>
-                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">pending</span>
-                    </div>
-                </div>
+            <div class="mb-4">
+                <TagihanCard :tagihan="tagihan" :loading="loading" />
             </div>
 
             <!-- Riwayat Pembayaran -->
+            <div class="mb-4">
+                <RiwayatPembayaran :pembayaran="pembayaran" :loading="loading" />
+            </div>
+
+            <!-- Riwayat Catatan Pajak -->
             <div class="bg-white rounded-lg shadow p-4">
-                <h2 class="font-semibold mb-3">Riwayat Pembayaran</h2>
-                <p class="text-sm text-gray-400 text-center">Belum ada riwayat pembayaran</p>
+                <h2 class="font-semibold mb-3">Catatan Pajak</h2>
+
+                <div v-if="loading" class="space-y-2">
+                    <div v-for="i in 2" :key="i" class="animate-pulse h-8 bg-gray-200 rounded"></div>
+                </div>
+
+                <div v-else-if="pajak.length === 0"
+                    class="text-center py-6 text-sm text-gray-400">
+                    Belum ada catatan pajak
+                </div>
+
+                <div v-else class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left border-b text-gray-500">
+                                <th class="pb-2 font-medium">No Faktur</th>
+                                <th class="pb-2 font-medium">Tanggal</th>
+                                <th class="pb-2 font-medium text-right">Subtotal</th>
+                                <th class="pb-2 font-medium text-right">Pajak</th>
+                                <th class="pb-2 font-medium text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="p in pajak" :key="p.id" class="border-b last:border-0">
+                                <td class="py-2 text-gray-700 font-medium">{{ p.no_faktur }}</td>
+                                <td class="py-2 text-gray-600">{{ formatDate(p.tgl_faktur) }}</td>
+                                <td class="py-2 text-right text-gray-600">{{ formatRupiah(p.subtotal) }}</td>
+                                <td class="py-2 text-right text-gray-600">{{ formatRupiah(p.nominal_pajak) }}</td>
+                                <td class="py-2 text-right font-medium text-blue-600">{{ formatRupiah(p.total) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </UserLayout>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import UserLayout from '@/Layouts/UserLayout.vue'
-</script>
+import StatusKoneksi from '@/Components/user/StatusKoneksi.vue'
+import TagihanCard from '@/Components/user/TagihanCard.vue'
+import RiwayatPembayaran from '@/Components/user/RiwayatPembayaran.vue'
 
+const loading = ref(true)
+const profil = ref({})
+const tagihan = ref([])
+const pembayaran = ref([])
+const pajak = ref([])
+
+const formatRupiah = (value) => {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+    }).format(value)
+}
+
+const formatDate = (dateStr) => {
+    if (!dateStr) return '-'
+    return new Date(dateStr).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    })
+}
+
+onMounted(async () => {
+    try {
+        const [profilRes, tagihanRes, pembayaranRes, pajakRes] = await Promise.all([
+            axios.get('/user/profil-koneksi'),
+            axios.get('/user/tagihan-aktif'),
+            axios.get('/user/riwayat-pembayaran'),
+            axios.get('/user/riwayat-pajak'),
+        ])
+        profil.value = profilRes.data
+        tagihan.value = tagihanRes.data
+        pembayaran.value = pembayaranRes.data
+        pajak.value = pajakRes.data
+    } catch (err) {
+        console.error('Gagal memuat data dashboard:', err)
+    } finally {
+        loading.value = false
+    }
+})
+</script>

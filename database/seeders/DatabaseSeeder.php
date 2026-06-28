@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             PelangganSeeder::class,
             InvoiceSeeder::class,
+            PopOltSeeder::class,
         ]);
     }
 }

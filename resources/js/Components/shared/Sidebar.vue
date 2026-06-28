@@ -8,7 +8,9 @@
         <nav class="flex-1 p-4 space-y-1">
             <Link v-for="item in menuItems" :key="item.route"
                 :href="route(item.route)"
-                class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 text-sm">
+                class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 text-sm"
+                :class="{ 'bg-gray-100 font-medium': isActive(item.route) }">
+                <span>{{ item.icon }}</span>
                 {{ item.label }}
             </Link>
         </nav>
@@ -45,18 +47,29 @@ const roleLabel = computed(() => ({
 const menuItems = computed(() => {
     if (role.value === 'superadmin') {
         return [
-            { label: 'Dashboard', route: 'superadmin.dashboard' },
-            { label: 'Invoice', route: 'invoice.index' },
+            { icon: '📊', label: 'Dashboard', route: 'superadmin.dashboard' },
+            { icon: '🗺️', label: 'Peta Jaringan', route: 'superadmin.peta' },
+            { icon: '📄', label: 'Invoice', route: 'invoice.index' },
+            { icon: '💬', label: 'Template WA', route: 'notifikasi.index' },
         ]
     }
     if (role.value === 'admin') {
         return [
-            { label: 'Dashboard', route: 'admin.dashboard' },
-            { label: 'Invoice', route: 'invoice.index' },
+            { icon: '📊', label: 'Dashboard', route: 'admin.dashboard' },
+            { icon: '📄', label: 'Invoice', route: 'invoice.index' },
+            { icon: '💬', label: 'Template WA', route: 'notifikasi.index' },
         ]
     }
     return [
-        { label: 'Dashboard', route: 'user.dashboard' },
+        { icon: '🏠', label: 'Dashboard', route: 'user.dashboard' },
     ]
 })
+
+const isActive = (routeName) => {
+    try {
+        return page.url === route(routeName)
+    } catch {
+        return false
+    }
+}
 </script>

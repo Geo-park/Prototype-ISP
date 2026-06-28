@@ -16,6 +16,7 @@ class Pelanggan extends Model
         'daerah',
         'no_wa',
         'paket_id',
+        'odp_id',
         'status',
         'pppoe_username',
         'pppoe_password',
@@ -35,6 +36,11 @@ class Pelanggan extends Model
     public function paket()
     {
         return $this->belongsTo(PaketInternet::class, 'paket_id');
+    }
+
+    public function odp()
+    {
+        return $this->belongsTo(Odp::class);
     }
 
     public function invoices()

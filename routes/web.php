@@ -4,6 +4,9 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\SuperadminController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PetaController;
+use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -33,6 +36,7 @@ Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmi
     Route::get('/invoice-terbaru', [SuperadminController::class, 'invoiceTerbaru'])->name('invoice-terbaru');
     Route::get('/aktivitas-log', [SuperadminController::class, 'aktivitasLog'])->name('aktivitas-log');
     Route::get('/statistik-daerah', [SuperadminController::class, 'statistikDaerah'])->name('statistik-daerah');
+    Route::get('/peta', [PetaController::class, 'index'])->name('peta');
 });
 
 // Admin routes
@@ -48,11 +52,29 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/koneksi/hidupkan/{id}', [AdminController::class, 'hidupkanKoneksi'])->name('koneksi.hidupkan');
 });
 
+// Peta routes (superadmin + admin)
+Route::middleware(['auth', 'admin'])->prefix('peta')->name('peta.')->group(function () {
+    Route::get('/semua', [PetaController::class, 'semua'])->name('semua');
+    Route::get('/pop-olt', [PetaController::class, 'popOlt'])->name('pop-olt');
+    Route::get('/odc', [PetaController::class, 'odc'])->name('odc');
+    Route::get('/odp', [PetaController::class, 'odp'])->name('odp');
+    Route::get('/pelanggan', [PetaController::class, 'pelanggan'])->name('pelanggan');
+});
+
+// Notifikasi routes (superadmin + admin)
+Route::middleware(['auth', 'admin'])->prefix('notifikasi')->name('notifikasi.')->group(function () {
+    Route::get('/', [NotifikasiController::class, 'index'])->name('index');
+    Route::get('/templates', [NotifikasiController::class, 'templates'])->name('templates');
+    Route::post('/simulasi-kirim', [NotifikasiController::class, 'simulasiKirim'])->name('simulasi-kirim');
+});
+
 // User routes
 Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('user/Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profil-koneksi', [UserController::class, 'profilKoneksi'])->name('profil-koneksi');
+    Route::get('/tagihan-aktif', [UserController::class, 'tagihanAktif'])->name('tagihan-aktif');
+    Route::get('/riwayat-pembayaran', [UserController::class, 'riwayatPembayaran'])->name('riwayat-pembayaran');
+    Route::get('/riwayat-pajak', [UserController::class, 'riwayatPajak'])->name('riwayat-pajak');
 });
 
 // Invoice routes (superadmin & admin)
