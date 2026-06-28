@@ -1,7 +1,12 @@
 <template>
     <AdminLayout>
         <div class="p-6">
-            <h1 class="text-2xl font-bold mb-6">Dashboard Admin</h1>
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Dashboard Admin</h1>
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    📍 {{ stats.daerah }}
+                </span>
+            </div>
 
             <!-- Stats -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -30,8 +35,9 @@
                 </div>
                 <table class="w-full text-sm table-fixed">
                     <colgroup>
-                        <col class="w-1/3" />
-                        <col class="w-1/3" />
+                        <col class="w-1/4" />
+                        <col class="w-1/4" />
+                        <col class="w-1/4" />
                         <col style="width: 110px" />
                         <col style="width: 100px" />
                     </colgroup>
@@ -39,6 +45,7 @@
                         <tr class="text-left border-b">
                             <th class="pb-2">Nama</th>
                             <th class="pb-2">Paket</th>
+                            <th class="pb-2">Daerah</th>
                             <th class="pb-2">Status</th>
                             <th class="pb-2">Aksi</th>
                         </tr>
@@ -47,6 +54,7 @@
                         <tr v-for="p in pelanggan" :key="p.id" class="border-b">
                             <td class="py-2">{{ p.nama }}</td>
                             <td class="py-2">{{ p.paket?.nama }}</td>
+                            <td class="py-2">{{ p.daerah }}</td>
                             <td class="py-2">
                                 <span
                                     :class="p.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
