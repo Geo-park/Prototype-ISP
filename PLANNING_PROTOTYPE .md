@@ -141,13 +141,13 @@ leaflet
 **Dikerjakan**: Dev A & Dev B bersama  
 
 ### Dev A
-- [ ] Install Laravel
-- [ ] Setup PostgreSQL + konfigurasi .env
-- [ ] Install Laravel Sanctum
-- [ ] Buat migration semua tabel dummy
-- [ ] Buat seeder data realistis
-- [ ] Setup API routes struktur awal
-- [ ] Buat shared component: Sidebar, Navbar, StatsCard, DataTable, BadgeStatus
+- [x] Install Laravel
+- [x] Setup PostgreSQL + konfigurasi .env
+- [x] Install Laravel Sanctum
+- [x] Buat migration semua tabel dummy
+- [x] Buat seeder data realistis
+- [x] Setup API routes struktur awal
+- [x] Buat shared component: Sidebar, Navbar, StatsCard, DataTable, BadgeStatus
 
 ### Dev B
 - [x] Setup Vite + Vue 3
@@ -166,27 +166,27 @@ leaflet
 **Dikerjakan**: Dev A  
 
 ### Backend
-- [ ] Model User dengan role enum (superadmin/admin/user)
-- [ ] AuthController (login, logout)
-- [ ] SuperadminMiddleware
-- [ ] AdminMiddleware
-- [ ] UserMiddleware
-- [ ] POST /api/login
-- [ ] POST /api/logout
-- [ ] GET /api/me
-- [ ] Seeder 3 akun demo:
+- [x] Model User dengan role enum (superadmin/admin/user)
+- [x] AuthController (login, logout)
+- [x] SuperadminMiddleware
+- [x] AdminMiddleware
+- [x] UserMiddleware
+- [x] POST /api/login
+- [x] POST /api/logout
+- [x] GET /api/me
+- [x] Seeder 3 akun demo:
   - superadmin@demo.com / demo1234
   - admin@demo.com / demo1234
   - user@demo.com / demo1234
 
 ### Frontend
-- [ ] Login.vue
-- [ ] Store auth.js (Pinia)
-- [ ] Vue Router + guard per role
-- [ ] SuperadminLayout.vue
-- [ ] AdminLayout.vue
-- [ ] Redirect otomatis sesuai role setelah login
-- [ ] Tombol "Preview as Role" untuk demo klien
+- [x] Login.vue
+- [x] Store auth.js (Pinia)
+- [x] Vue Router + guard per role
+- [x] SuperadminLayout.vue
+- [x] AdminLayout.vue
+- [x] Redirect otomatis sesuai role setelah login
+- [x] Tombol "Preview as Role" untuk demo klien
 
 ---
 
@@ -195,28 +195,28 @@ leaflet
 **Dikerjakan**: Dev A  
 
 ### Backend
-- [ ] SuperadminController
-- [ ] GET /api/superadmin/stats
+- [x] SuperadminController
+- [x] GET /api/superadmin/stats
   - total pelanggan aktif/nonaktif
   - revenue bulan ini
   - tagihan pending
   - jaringan bermasalah
-- [ ] GET /api/superadmin/revenue-chart (6 bulan)
-- [ ] GET /api/superadmin/pelanggan-chart
-- [ ] GET /api/superadmin/status-pembayaran
-- [ ] GET /api/superadmin/invoice-terbaru
-- [ ] GET /api/superadmin/aktivitas-log
-- [ ] GET /api/superadmin/status-jaringan
+- [x] GET /api/superadmin/revenue-chart (6 bulan)
+- [x] GET /api/superadmin/pelanggan-chart
+- [x] GET /api/superadmin/status-pembayaran
+- [x] GET /api/superadmin/invoice-terbaru
+- [x] GET /api/superadmin/aktivitas-log
+- [x] GET /api/superadmin/status-jaringan
 
 ### Frontend
-- [ ] Dashboard.vue (superadmin)
-- [ ] StatsCard.vue (reusable)
-- [ ] RevenueChart.vue (bar chart 6 bulan)
-- [ ] PelangganChart.vue (line chart)
-- [ ] StatusPembayaranChart.vue (pie chart paid/pending/overdue)
-- [ ] TabelInvoiceTerbaru.vue
-- [ ] TabelAktivitas.vue
-- [ ] StatusJaringanSummary.vue
+- [x] Dashboard.vue (superadmin)
+- [x] StatsCard.vue (reusable)
+- [x] RevenueChart.vue (bar chart 6 bulan)
+- [x] PelangganChart.vue (line chart)
+- [x] StatusPembayaranChart.vue (pie chart paid/pending/overdue)
+- [x] TabelInvoiceTerbaru.vue
+- [x] TabelAktivitas.vue
+- [x] StatusJaringanSummary.vue
 
 ---
 
@@ -225,18 +225,18 @@ leaflet
 **Dikerjakan**: Dev B  
 
 ### Backend
-- [ ] Model PopOlt, Odc, Odp, Pelanggan
-- [ ] Migration + seeder koordinat dummy
-- [ ] PetaController
-- [ ] GET /api/peta/pop-olt
-- [ ] GET /api/peta/odc
-- [ ] GET /api/peta/odp
-- [ ] GET /api/peta/pelanggan
-- [ ] GET /api/peta/semua (single endpoint)
+- [x] Model PopOlt, Odc, Odp, Pelanggan
+- [x] Migration + seeder koordinat dummy
+- [x] PetaController
+- [x] GET /api/peta/pop-olt
+- [x] GET /api/peta/odc
+- [x] GET /api/peta/odp
+- [x] GET /api/peta/pelanggan
+- [x] GET /api/peta/semua (single endpoint)
 
 ### Frontend
-- [ ] PetaJaringan.vue (Leaflet wrapper)
-- [ ] Custom marker icon per tipe:
+- [x] PetaJaringan.vue (Leaflet wrapper)
+- [x] Custom marker icon per tipe:
   - POP → ikon tower, biru
   - ODC L1 → ikon cabinet, hijau
   - ODC L2 → ikon cabinet, kuning
@@ -244,10 +244,10 @@ leaflet
   - Pelanggan aktif + bayar → hijau
   - Pelanggan aktif + belum bayar → kuning
   - Pelanggan nonaktif → merah
-- [ ] Garis koneksi antar titik (POP→ODC→ODP→Pelanggan)
-- [ ] MarkerPopup.vue per tipe marker
-- [ ] FilterPanel.vue (filter by status/tipe)
-- [ ] Toggle layer show/hide
+- [x] Garis koneksi antar titik (POP→ODC→ODP→Pelanggan)
+- [x] MarkerPopup.vue per tipe marker
+- [x] FilterPanel.vue (filter by status/tipe)
+- [x] Toggle layer show/hide
 
 ---
 
@@ -256,37 +256,37 @@ leaflet
 **Dikerjakan**: Dev A  
 
 ### Backend
-- [ ] Model Invoice, Pembayaran, CatatanPajak
-- [ ] InvoiceController
-- [ ] GET /api/invoice (list)
-- [ ] GET /api/invoice/:id (detail)
-- [ ] POST /api/invoice/:id/simulasi-bayar
+- [x] Model Invoice, Pembayaran, CatatanPajak
+- [x] InvoiceController
+- [x] GET /api/invoice (list)
+- [x] GET /api/invoice/:id (detail)
+- [x] POST /api/invoice/:id/simulasi-bayar
   - update status → paid
   - generate catatan pajak dummy
   - return response sukses
-- [ ] GET /api/catatan-pajak/:id
-- [ ] Seeder invoice dummy:
+- [x] GET /api/catatan-pajak/:id
+- [x] Seeder invoice dummy:
   - status pending
   - status paid
   - status overdue
 
 ### Frontend
-- [ ] ListInvoice.vue
+- [x] ListInvoice.vue
   - tabel + badge status
   - filter by status
   - search by nama / no invoice
-- [ ] DetailInvoice.vue
+- [x] DetailInvoice.vue
   - info pelanggan
   - breakdown: subtotal + pajak (11%) + total
   - tombol kirim WA (dummy toast)
   - tombol bayar sekarang
-- [ ] SimulasiPayment.vue
+- [x] SimulasiPayment.vue
   - pilih metode: QRIS / VA / Transfer
   - instruksi pembayaran dummy
   - tombol "Simulasi Bayar Berhasil"
   - animasi sukses
   - redirect ke detail invoice dengan status PAID
-- [ ] DetailCatatanPajak.vue
+- [x] DetailCatatanPajak.vue
   - no faktur, tanggal, detail item
   - subtotal, pajak, total
   - tombol download PDF (dummy)
@@ -298,8 +298,8 @@ leaflet
 **Dikerjakan**: Dev B  
 
 ### Backend
-- [ ] NotifikasiController
-- [ ] GET /api/notifikasi/templates
+- [x] NotifikasiController
+- [x] GET /api/notifikasi/templates
   - invoice
   - reminder_h3
   - reminder_h1
@@ -307,20 +307,20 @@ leaflet
   - koneksi_mati
   - koneksi_hidup
   - bukti_bayar
-- [ ] POST /api/notifikasi/simulasi-kirim
+- [x] POST /api/notifikasi/simulasi-kirim
   - return dummy response sukses
 
 ### Frontend
-- [ ] TemplateWA.vue (halaman utama)
-- [ ] BubbleWA.vue (reusable)
+- [x] TemplateWA.vue (halaman utama)
+- [x] BubbleWA.vue (reusable)
   - style mirip tampilan WA
   - bubble hijau + avatar + timestamp
-- [ ] Render semua 7 template WA
-- [ ] Variable replacement preview:
+- [x] Render semua 7 template WA
+- [x] Variable replacement preview:
   - [Nama] → nama pelanggan dummy
   - [Total] → angka invoice dummy
   - [Tanggal] → tanggal dummy
-- [ ] Tombol "Simulasi Kirim"
+- [x] Tombol "Simulasi Kirim"
   - toast: "Pesan terkirim ke 08xx"
 
 ---
@@ -330,23 +330,23 @@ leaflet
 **Dikerjakan**: Dev A  
 
 ### Backend
-- [ ] AdminController
-- [ ] GET /api/admin/stats
+- [x] AdminController
+- [x] GET /api/admin/stats
   - total pelanggan area
   - tagihan pending
   - koneksi bermasalah
-- [ ] GET /api/admin/pelanggan
-- [ ] GET /api/admin/tiket-aktif
-- [ ] POST /api/admin/koneksi/matikan (dummy)
-- [ ] POST /api/admin/koneksi/hidupkan (dummy)
+- [x] GET /api/admin/pelanggan
+- [x] GET /api/admin/tiket-aktif
+- [x] POST /api/admin/koneksi/matikan (dummy)
+- [x] POST /api/admin/koneksi/hidupkan (dummy)
 
 ### Frontend
-- [ ] Dashboard.vue (admin)
-- [ ] TabelPelanggan.vue
+- [x] Dashboard.vue (admin)
+- [x] TabelPelanggan.vue
   - nama, paket, status koneksi, status bayar
   - tombol matikan/hidupkan koneksi
   - modal konfirmasi aksi
-- [ ] ListTiketAktif.vue
+- [x] ListTiketAktif.vue
 
 ---
 
@@ -355,24 +355,24 @@ leaflet
 **Dikerjakan**: Dev B  
 
 ### Backend
-- [ ] UserController
-- [ ] GET /api/user/profil-koneksi
-- [ ] GET /api/user/tagihan-aktif
-- [ ] GET /api/user/riwayat-pembayaran
-- [ ] GET /api/user/riwayat-pajak
+- [x] UserController
+- [x] GET /api/user/profil-koneksi
+- [x] GET /api/user/tagihan-aktif
+- [x] GET /api/user/riwayat-pembayaran
+- [x] GET /api/user/riwayat-pajak
 
 ### Frontend
-- [ ] UserLayout.vue
-- [ ] Dashboard.vue (user)
-- [ ] StatusKoneksi.vue
+- [x] UserLayout.vue
+- [x] Dashboard.vue (user)
+- [x] StatusKoneksi.vue
   - badge besar AKTIF / NONAKTIF
   - info paket + kecepatan
   - tanggal jatuh tempo
-- [ ] TagihanCard.vue
+- [x] TagihanCard.vue
   - nominal + status
   - tombol bayar → flow fase 4
-- [ ] RiwayatPembayaran.vue
-- [ ] RiwayatCatatanPajak.vue
+- [x] RiwayatPembayaran.vue
+- [x] RiwayatCatatanPajak.vue
 
 ---
 
@@ -381,23 +381,23 @@ leaflet
 **Dikerjakan**: Dev A & Dev B bersama  
 
 ### Dev A
-- [ ] Pastikan semua API response format konsisten
-- [ ] Cek semua seeder data realistis
-- [ ] Dokumentasi akun demo
-- [ ] Setup environment production dummy
+- [x] Pastikan semua API response format konsisten
+- [x] Cek semua seeder data realistis
+- [x] Dokumentasi akun demo
+- [x] Setup environment production dummy
 
 ### Dev B
-- [ ] Responsive check semua halaman
-- [ ] Loading state semua komponen
-- [ ] Transisi halaman smooth
-- [ ] Empty state semua tabel
-- [ ] Error handling UI
-- [ ] Semua tombol ada feedback
+- [x] Responsive check semua halaman
+- [x] Loading state semua komponen
+- [x] Transisi halaman smooth
+- [x] Empty state semua tabel
+- [x] Error handling UI
+- [x] Semua tombol ada feedback
 
 ### Bersama
-- [ ] End-to-end walkthrough semua flow
-- [ ] Fix bug visual
-- [ ] Siapkan script demo untuk presentasi ke klien
+- [x] End-to-end walkthrough semua flow
+- [x] Fix bug visual
+- [x] Siapkan script demo untuk presentasi ke klien
 
 ---
 
