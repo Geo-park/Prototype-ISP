@@ -10,4 +10,3 @@
 <script setup>
 import Sidebar from '@/Components/shared/Sidebar.vue'
 </script>
-
