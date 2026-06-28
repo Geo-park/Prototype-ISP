@@ -17,6 +17,7 @@ class Odc extends Model
         'lng',
         'status',
         'kapasitas',
+        'daerah',
     ];
 
     public function popOlt()

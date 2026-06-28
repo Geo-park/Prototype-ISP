@@ -261,40 +261,36 @@ const hidupkanKoneksi = async (id) => {
 }
 
 onMounted(async () => {
-    const [statsRes, revenueRes, statusRes, invoiceRes, logRes, pelangganRes, laporanRes, daerahRes] = await Promise.all([
-        axios.get('/superadmin/stats'),
-        axios.get('/superadmin/revenue-chart'),
-        axios.get('/superadmin/status-pembayaran'),
-        axios.get('/superadmin/invoice-terbaru'),
-        axios.get('/superadmin/aktivitas-log'),
-        axios.get('/admin/pelanggan'),
-        axios.get('/admin/laporan-keluhan'),
-        axios.get('/superadmin/statistik-daerah'),
-    ])
+    try {
+        const res = await axios.get('/superadmin/dashboard-data')
+        const d = res.data
 
-    stats.value = statsRes.data
+        stats.value = d.stats
 
-    revenueChart.value = {
-        labels: revenueRes.data.map(d => d.bulan),
-        datasets: [{
-            label: 'Revenue',
-            data: revenueRes.data.map(d => d.revenue),
-            backgroundColor: '#3b82f6',
-        }]
+        revenueChart.value = {
+            labels: d.revenue_chart.map(item => item.bulan),
+            datasets: [{
+                label: 'Revenue',
+                data: d.revenue_chart.map(item => item.revenue),
+                backgroundColor: '#3b82f6',
+            }]
+        }
+
+        statusPembayaran.value = {
+            labels: ['Paid', 'Pending', 'Overdue'],
+            datasets: [{
+                data: [d.status_pembayaran.paid, d.status_pembayaran.pending, d.status_pembayaran.overdue],
+                backgroundColor: ['#22c55e', '#eab308', '#ef4444'],
+            }]
+        }
+
+        invoiceTerbaru.value = d.invoice_terbaru
+        aktivitasLog.value = d.aktivitas_log
+        pelanggan.value = d.pelanggan
+        laporanKeluhan.value = d.laporan_keluhan
+        statistikDaerah.value = d.statistik_daerah
+    } catch (e) {
+        console.error('Gagal memuat data dashboard superadmin:', e)
     }
-
-    statusPembayaran.value = {
-        labels: ['Paid', 'Pending', 'Overdue'],
-        datasets: [{
-            data: [statusRes.data.paid, statusRes.data.pending, statusRes.data.overdue],
-            backgroundColor: ['#22c55e', '#eab308', '#ef4444'],
-        }]
-    }
-
-    invoiceTerbaru.value = invoiceRes.data
-    aktivitasLog.value = logRes.data
-    pelanggan.value = pelangganRes.data
-    laporanKeluhan.value = laporanRes.data
-    statistikDaerah.value = daerahRes.data
 })
 </script>

@@ -58,6 +58,19 @@
                         <p v-if="errors.paket_id" class="text-red-500 text-xs mt-1">{{ errors.paket_id }}</p>
                     </div>
 
+                    <!-- ODP Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Optical Distribution Point (ODP)</label>
+                        <select v-model="form.odp_id"
+                            class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Pilih ODP Terdekat</option>
+                            <option v-for="o in odps" :key="o.id" :value="o.id">
+                                📍 {{ o.nama }} ({{ o.kode }})
+                            </option>
+                        </select>
+                        <p v-if="errors.odp_id" class="text-red-500 text-xs mt-1">{{ errors.odp_id }}</p>
+                    </div>
+
                     <!-- PPPoE -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -104,6 +117,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import axios from 'axios'
 
 const pakets = ref([])
+const odps = ref([])
 const loading = ref(false)
 const errors = ref({})
 
@@ -113,6 +127,7 @@ const form = ref({
     no_wa: '',
     alamat: '',
     paket_id: '',
+    odp_id: '',
     pppoe_username: '',
     pppoe_password: '',
     tgl_aktivasi: new Date().toISOString().split('T')[0],
@@ -146,7 +161,11 @@ const submit = async () => {
 }
 
 onMounted(async () => {
-    const res = await axios.get('/admin/paket')
-    pakets.value = res.data
+    const [paketRes, odpRes] = await Promise.all([
+        axios.get('/admin/paket'),
+        axios.get('/admin/get-odps')
+    ])
+    pakets.value = paketRes.data
+    odps.value = odpRes.data
 })
 </script>

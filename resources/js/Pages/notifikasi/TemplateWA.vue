@@ -6,7 +6,7 @@
 
             <!-- Variable preview controls -->
             <div class="bg-white rounded-lg shadow p-4 mb-6">
-                <h2 class="font-semibold text-sm mb-3 text-gray-700">Data Preview</h2>
+                <h2 class="font-semibold text-sm mb-3 text-gray-700">Data Preview & WhatsApp Test</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Nama Pelanggan</label>
@@ -27,6 +27,13 @@
                         <label class="block text-xs text-gray-500 mb-1">Tanggal</label>
                         <input v-model="variables.Tanggal" type="text"
                             class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="col-span-2 md:col-span-4 mt-2">
+                        <label class="block text-xs text-gray-700 font-semibold mb-1">No WhatsApp Penerima (Untuk Kirim Nyata/Simulasi)</label>
+                        <input v-model="targetNoWa" type="text"
+                            class="w-full md:w-1/2 border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Contoh: 081234567890 atau 6281234567890">
+                        <p class="text-xs text-gray-500 mt-1">Masukkan nomor Anda untuk mencoba. Jika FONNTE_TOKEN dipasang di .env, pesan nyata akan dikirim.</p>
                     </div>
                 </div>
             </div>
@@ -75,6 +82,7 @@ import TemplateWACard from '@/Components/notifikasi/TemplateWA.vue'
 const loading = ref(true)
 const templates = ref([])
 const toast = ref(null)
+const targetNoWa = ref('081234567890')
 
 const variables = ref({
     Nama: 'Budi Santoso',
@@ -97,17 +105,30 @@ onMounted(async () => {
     }
 })
 
+const formatMessage = (msg) => {
+    let text = msg
+    Object.entries(variables.value).forEach(([key, value]) => {
+        text = text.replace(new RegExp(`\\[${key}\\]`, 'g'), value)
+    })
+    return text
+}
+
 const simulasiKirim = async (template) => {
+    if (!targetNoWa.value) {
+        alert('Masukkan nomor WhatsApp penerima terlebih dahulu.')
+        return
+    }
+
     try {
         const res = await axios.post('/notifikasi/simulasi-kirim', {
-            template_id: template.id,
-            no_wa: '081234567890',
+            no_wa: targetNoWa.value,
+            pesan: formatMessage(template.pesan),
         })
         toast.value = res.data.message
-        setTimeout(() => { toast.value = null }, 3000)
+        setTimeout(() => { toast.value = null }, 4000)
     } catch (err) {
-        toast.value = 'Gagal mengirim pesan'
-        setTimeout(() => { toast.value = null }, 3000)
+        toast.value = 'Gagal mengirim pesan: ' + (err.response?.data?.message || err.message)
+        setTimeout(() => { toast.value = null }, 4000)
     }
 }
 </script>

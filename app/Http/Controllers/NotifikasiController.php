@@ -62,11 +62,19 @@ class NotifikasiController extends Controller
         return response()->json($templates);
     }
 
-    public function simulasiKirim(Request $request)
+    public function simulasiKirim(Request $request, \App\Services\FonnteService $fonnte)
     {
+        $request->validate([
+            'no_wa' => 'required|string',
+            'pesan' => 'required|string',
+        ]);
+
+        $result = $fonnte->send($request->no_wa, $request->pesan);
+
         return response()->json([
-            'message' => 'Pesan berhasil dikirim ke ' . ($request->no_wa ?? '08xxxxxxxxxx'),
-            'status'  => 'success',
+            'message' => $result['message'],
+            'status'  => $result['success'] ? 'success' : 'error',
+            'data'    => $result['data'],
         ]);
     }
 }

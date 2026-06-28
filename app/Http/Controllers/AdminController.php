@@ -13,6 +13,57 @@ class AdminController extends Controller
         return Inertia::render('admin/Dashboard');
     }
 
+    public function dashboardData()
+    {
+        $user = auth()->user();
+
+        $query = Pelanggan::query()
+            ->when($user->role === 'admin', function ($q) use ($user) {
+                $q->where('daerah', $user->daerah);
+            });
+
+        $stats = [
+            'total_pelanggan_aktif'    => (clone $query)->where('status', 'aktif')->count(),
+            'total_pelanggan_nonaktif' => (clone $query)->where('status', 'nonaktif')->count(),
+            'tagihan_pending'          => \App\Models\Invoice::where('status', 'pending')
+                ->when($user->role === 'admin', function ($q) use ($user) {
+                    $q->whereHas('pelanggan', function ($pq) use ($user) {
+                        $pq->where('daerah', $user->daerah);
+                    });
+                })->count(),
+            'daerah'                   => $user->daerah ?? 'Semua Daerah',
+        ];
+
+        $pelanggan = Pelanggan::with('paket')
+            ->when($user->role === 'admin', function ($q) use ($user) {
+                $q->where('daerah', $user->daerah);
+            })
+            ->get();
+
+        $laporanKeluhan = [
+            ['id' => 1, 'judul' => 'Koneksi lambat', 'pelanggan' => 'Budi Santoso', 'status' => 'open', 'deskripsi' => 'Internet sangat lambat sejak kemarin sore, tidak bisa streaming.'],
+            ['id' => 2, 'judul' => 'Tidak bisa konek', 'pelanggan' => 'Siti Rahayu', 'status' => 'open', 'deskripsi' => 'Router menyala tapi tidak ada koneksi internet sama sekali.'],
+        ];
+
+        return response()->json([
+            'stats'           => $stats,
+            'pelanggan'       => $pelanggan,
+            'laporan_keluhan' => $laporanKeluhan,
+        ]);
+    }
+
+    public function getOdps()
+    {
+        $user = auth()->user();
+        $odps = \App\Models\Odp::query()
+            ->when($user->role === 'admin', function ($q) use ($user) {
+                $q->where('daerah', $user->daerah);
+            })
+            ->get();
+
+        return response()->json($odps);
+    }
+
     public function stats()
     {
         $user = auth()->user();
@@ -25,7 +76,12 @@ class AdminController extends Controller
         return response()->json([
             'total_pelanggan_aktif'    => (clone $query)->where('status', 'aktif')->count(),
             'total_pelanggan_nonaktif' => (clone $query)->where('status', 'nonaktif')->count(),
-            'tagihan_pending'          => \App\Models\Invoice::where('status', 'pending')->count(),
+            'tagihan_pending'          => \App\Models\Invoice::where('status', 'pending')
+                ->when($user->role === 'admin', function ($q) use ($user) {
+                    $q->whereHas('pelanggan', function ($pq) use ($user) {
+                        $pq->where('daerah', $user->daerah);
+                    });
+                })->count(),
             'daerah'                   => $user->daerah ?? 'Semua Daerah',
         ]);
     }
@@ -83,6 +139,7 @@ class AdminController extends Controller
             'no_wa'          => 'required|string',
             'alamat'         => 'required|string',
             'paket_id'       => 'required|exists:paket_internet,id',
+            'odp_id'         => 'required|exists:odp,id',
             'pppoe_username' => 'required|string|unique:pelanggan,pppoe_username',
             'pppoe_password' => 'required|string',
             'tgl_aktivasi'   => 'required|date',
@@ -106,6 +163,16 @@ class AdminController extends Controller
                 $masaAktif      = $paket->masa_aktif ?? 30;
                 $tglJatuhTempo  = date('Y-m-d', strtotime($tglAktivasi . ' + ' . $masaAktif . ' days'));
 
+                // Cari ODP untuk koordinat baseline
+                $odp = \App\Models\Odp::findOrFail($request->odp_id);
+                
+                // Hitung offset acak kecil (+/- 0.0003 derajat, sekitar 30 meter dari ODP)
+                $latOffset = (mt_rand(-300, 300) / 1000000);
+                $lngOffset = (mt_rand(-300, 300) / 1000000);
+                
+                $lat = $odp->lat + $latOffset;
+                $lng = $odp->lng + $lngOffset;
+
                 // Buat data pelanggan
                 Pelanggan::create([
                     'user_id'         => $user->id,
@@ -115,11 +182,14 @@ class AdminController extends Controller
                     'daerah'          => auth()->user()->daerah,
                     'no_wa'           => $request->no_wa,
                     'paket_id'        => $request->paket_id,
+                    'odp_id'          => $request->odp_id,
                     'status'          => 'aktif',
                     'pppoe_username'  => $request->pppoe_username,
                     'pppoe_password'  => $request->pppoe_password,
                     'tgl_aktivasi'    => $tglAktivasi,
                     'tgl_jatuh_tempo' => $tglJatuhTempo,
+                    'lat'             => $lat,
+                    'lng'             => $lng,
                 ]);
             });
 

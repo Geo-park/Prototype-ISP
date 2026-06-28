@@ -91,16 +91,11 @@ const formatDate = (dateStr) => {
 
 onMounted(async () => {
     try {
-        const [profilRes, tagihanRes, pembayaranRes, pajakRes] = await Promise.all([
-            axios.get('/user/profil-koneksi'),
-            axios.get('/user/tagihan-aktif'),
-            axios.get('/user/riwayat-pembayaran'),
-            axios.get('/user/riwayat-pajak'),
-        ])
-        profil.value = profilRes.data
-        tagihan.value = tagihanRes.data
-        pembayaran.value = pembayaranRes.data
-        pajak.value = pajakRes.data
+        const res = await axios.get('/user/dashboard-data')
+        profil.value = res.data.profil
+        tagihan.value = res.data.tagihan
+        pembayaran.value = res.data.pembayaran
+        pajak.value = res.data.pajak
     } catch (err) {
         console.error('Gagal memuat data dashboard:', err)
     } finally {

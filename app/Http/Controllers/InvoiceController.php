@@ -26,6 +26,14 @@ class InvoiceController extends Controller
         $invoice = Invoice::with(['pelanggan', 'pembayarans', 'pembayaranSukses'])
             ->findOrFail($id);
 
+        $user = auth()->user();
+        if ($user->role === 'user') {
+            $pelanggan = \App\Models\Pelanggan::where('user_id', $user->id)->first();
+            if (!$pelanggan || $invoice->pelanggan_id !== $pelanggan->id) {
+                abort(403, 'Akses ditolak.');
+            }
+        }
+
         return Inertia::render('invoice/Detail', [
             'invoice' => $invoice,
         ]);
@@ -67,6 +75,14 @@ class InvoiceController extends Controller
     public function simulasiBayar(Request $request, $id)
     {
         $invoice = Invoice::findOrFail($id);
+
+        $user = auth()->user();
+        if ($user->role === 'user') {
+            $pelanggan = \App\Models\Pelanggan::where('user_id', $user->id)->first();
+            if (!$pelanggan || $invoice->pelanggan_id !== $pelanggan->id) {
+                abort(403, 'Akses ditolak.');
+            }
+        }
 
         // Expire pending lama
         $invoice->pembayarans()

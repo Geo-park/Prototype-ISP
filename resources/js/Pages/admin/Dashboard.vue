@@ -146,14 +146,14 @@ const bukaModal = (laporan) => {
 }
 
 onMounted(async () => {
-    const [statsRes, pelangganRes, laporanRes] = await Promise.all([
-        axios.get('/admin/stats'),
-        axios.get('/admin/pelanggan'),
-        axios.get('/admin/laporan-keluhan'),
-    ])
-    stats.value = statsRes.data
-    pelanggan.value = pelangganRes.data
-    laporanKeluhan.value = laporanRes.data
+    try {
+        const res = await axios.get('/admin/dashboard-data')
+        stats.value = res.data.stats
+        pelanggan.value = res.data.pelanggan
+        laporanKeluhan.value = res.data.laporan_keluhan
+    } catch (e) {
+        console.error('Gagal memuat data dashboard admin:', e)
+    }
 })
 
 const matikanKoneksi = async (id) => {

@@ -15,6 +15,7 @@ class PopOlt extends Model
         'lng',
         'status',
         'kapasitas',
+        'daerah',
     ];
 
     public function odcs()

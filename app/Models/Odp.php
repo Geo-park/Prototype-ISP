@@ -16,6 +16,7 @@ class Odp extends Model
         'lng',
         'status',
         'kapasitas',
+        'daerah',
     ];
 
     public function odc()

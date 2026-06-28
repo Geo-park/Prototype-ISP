@@ -8,7 +8,6 @@ use App\Http\Controllers\PetaController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 // Welcome
 Route::get('/', function () {
@@ -29,6 +28,7 @@ require __DIR__.'/auth.php';
 // Superadmin routes
 Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
     Route::get('/dashboard', [SuperadminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard-data', [SuperadminController::class, 'dashboardData'])->name('dashboard-data');
     Route::get('/stats', [SuperadminController::class, 'stats'])->name('stats');
     Route::get('/revenue-chart', [SuperadminController::class, 'revenueChart'])->name('revenue-chart');
     Route::get('/pelanggan-chart', [SuperadminController::class, 'pelangganChart'])->name('pelanggan-chart');
@@ -42,6 +42,8 @@ Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmi
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard-data', [AdminController::class, 'dashboardData'])->name('dashboard-data');
+    Route::get('/get-odps', [AdminController::class, 'getOdps'])->name('get-odps');
     Route::get('/stats', [AdminController::class, 'stats'])->name('stats');
     Route::get('/paket', [AdminController::class, 'paket'])->name('paket');
     Route::get('/laporan-keluhan', [AdminController::class, 'laporanKeluhan'])->name('laporan-keluhan');
@@ -71,16 +73,21 @@ Route::middleware(['auth', 'admin'])->prefix('notifikasi')->name('notifikasi.')-
 // User routes
 Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard-data', [UserController::class, 'dashboardData'])->name('dashboard-data');
     Route::get('/profil-koneksi', [UserController::class, 'profilKoneksi'])->name('profil-koneksi');
     Route::get('/tagihan-aktif', [UserController::class, 'tagihanAktif'])->name('tagihan-aktif');
     Route::get('/riwayat-pembayaran', [UserController::class, 'riwayatPembayaran'])->name('riwayat-pembayaran');
     Route::get('/riwayat-pajak', [UserController::class, 'riwayatPajak'])->name('riwayat-pajak');
 });
 
-// Invoice routes (superadmin & admin)
+// Invoice management routes (restricted to admin & superadmin)
 Route::middleware(['auth', 'admin'])->prefix('invoice')->name('invoice.')->group(function () {
     Route::get('/', [InvoiceController::class, 'index'])->name('index');
-    Route::get('/{id}', [InvoiceController::class, 'show'])->name('show');
     Route::post('/', [InvoiceController::class, 'store'])->name('store');
+});
+
+// Invoice detail & payment simulation (accessible by both admins and the customer who owns it)
+Route::middleware(['auth'])->prefix('invoice')->name('invoice.')->group(function () {
+    Route::get('/{id}', [InvoiceController::class, 'show'])->name('show');
     Route::post('/{id}/simulasi-bayar', [InvoiceController::class, 'simulasiBayar'])->name('simulasi-bayar');
 });

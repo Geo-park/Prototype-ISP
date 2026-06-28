@@ -20,15 +20,17 @@ class PopOltSeeder extends Seeder
             'lng'       => 106.1500,
             'status'    => 'aktif',
             'kapasitas' => 256,
+            'daerah'    => 'Banten',
         ]);
 
         $pop2 = PopOlt::create([
-            'nama'      => 'POP Serang Selatan',
-            'kode'      => 'POP-SRG-02',
-            'lat'       => -6.1450,
-            'lng'       => 106.1650,
+            'nama'      => 'POP Jakarta Selatan',
+            'kode'      => 'POP-JKT-01',
+            'lat'       => -6.2600,
+            'lng'       => 106.7810,
             'status'    => 'aktif',
             'kapasitas' => 128,
+            'daerah'    => 'Jakarta',
         ]);
 
         // === ODC Level 1 ===
@@ -41,17 +43,19 @@ class PopOltSeeder extends Seeder
             'lng'        => 106.1530,
             'status'     => 'aktif',
             'kapasitas'  => 64,
+            'daerah'     => 'Banten',
         ]);
 
         $odcL1_2 = Odc::create([
             'pop_olt_id' => $pop2->id,
-            'nama'       => 'ODC Serang Kota B',
-            'kode'       => 'ODC-SRG-L1-02',
+            'nama'       => 'ODC Jakarta Selatan A',
+            'kode'       => 'ODC-JKT-L1-01',
             'level'      => 'L1',
-            'lat'        => -6.1400,
-            'lng'        => 106.1620,
+            'lat'        => -6.2620,
+            'lng'        => 106.7830,
             'status'     => 'aktif',
             'kapasitas'  => 64,
+            'daerah'     => 'Jakarta',
         ]);
 
         // === ODC Level 2 ===
@@ -64,20 +68,22 @@ class PopOltSeeder extends Seeder
             'lng'        => 106.1480,
             'status'     => 'aktif',
             'kapasitas'  => 32,
+            'daerah'     => 'Banten',
         ]);
 
         $odcL2_2 = Odc::create([
             'pop_olt_id' => $pop2->id,
-            'nama'       => 'ODC Kasemen',
-            'kode'       => 'ODC-SRG-L2-02',
+            'nama'       => 'ODC Kebayoran',
+            'kode'       => 'ODC-JKT-L2-01',
             'level'      => 'L2',
-            'lat'        => -6.1480,
-            'lng'        => 106.1700,
+            'lat'        => -6.2650,
+            'lng'        => 106.7850,
             'status'     => 'nonaktif',
             'kapasitas'  => 32,
+            'daerah'     => 'Jakarta',
         ]);
 
-        // === ODP ===
+        // === ODP Banten ===
         $odp1 = Odp::create([
             'odc_id'    => $odcL1_1->id,
             'nama'      => 'ODP Merdeka 01',
@@ -86,6 +92,7 @@ class PopOltSeeder extends Seeder
             'lng'       => 106.1510,
             'status'    => 'aktif',
             'kapasitas' => 8,
+            'daerah'    => 'Banten',
         ]);
 
         $odp2 = Odp::create([
@@ -96,68 +103,71 @@ class PopOltSeeder extends Seeder
             'lng'       => 106.1550,
             'status'    => 'aktif',
             'kapasitas' => 8,
+            'daerah'    => 'Banten',
         ]);
 
         $odp3 = Odp::create([
-            'odc_id'    => $odcL1_2->id,
-            'nama'      => 'ODP Pahlawan 01',
-            'kode'      => 'ODP-SRG-003',
-            'lat'       => -6.1350,
-            'lng'       => 106.1610,
-            'status'    => 'aktif',
-            'kapasitas' => 8,
-        ]);
-
-        $odp4 = Odp::create([
             'odc_id'    => $odcL2_1->id,
             'nama'      => 'ODP Cipocok 01',
-            'kode'      => 'ODP-SRG-004',
+            'kode'      => 'ODP-SRG-003',
             'lat'       => -6.1220,
             'lng'       => 106.1470,
             'status'    => 'aktif',
             'kapasitas' => 8,
+            'daerah'    => 'Banten',
+        ]);
+
+        // === ODP Jakarta ===
+        $odp4 = Odp::create([
+            'odc_id'    => $odcL1_2->id,
+            'nama'      => 'ODP Jaksel 01',
+            'kode'      => 'ODP-JKT-001',
+            'lat'       => -6.2610,
+            'lng'       => 106.7825,
+            'status'    => 'aktif',
+            'kapasitas' => 8,
+            'daerah'    => 'Jakarta',
         ]);
 
         $odp5 = Odp::create([
-            'odc_id'    => $odcL2_1->id,
-            'nama'      => 'ODP Cipocok 02',
-            'kode'      => 'ODP-SRG-005',
-            'lat'       => -6.1240,
-            'lng'       => 106.1500,
+            'odc_id'    => $odcL1_2->id,
+            'nama'      => 'ODP Jaksel 02',
+            'kode'      => 'ODP-JKT-002',
+            'lat'       => -6.2635,
+            'lng'       => 106.7840,
             'status'    => 'aktif',
             'kapasitas' => 8,
+            'daerah'    => 'Jakarta',
         ]);
 
         $odp6 = Odp::create([
             'odc_id'    => $odcL2_2->id,
-            'nama'      => 'ODP Kasemen 01',
-            'kode'      => 'ODP-SRG-006',
-            'lat'       => -6.1500,
-            'lng'       => 106.1720,
+            'nama'      => 'ODP Kebayoran 01',
+            'kode'      => 'ODP-JKT-003',
+            'lat'       => -6.2660,
+            'lng'       => 106.7860,
             'status'    => 'nonaktif',
             'kapasitas' => 8,
+            'daerah'    => 'Jakarta',
         ]);
 
         // === Assign pelanggan ke ODP ===
-        // Pelanggan 1 (Budi) → ODP Merdeka 01
         Pelanggan::where('no_pelanggan', 'PLG-20250101-001')->update([
             'odp_id' => $odp1->id,
-            'lat'    => -6.1201,
-            'lng'    => 106.1503,
+            'lat'    => -6.1185,
+            'lng'    => 106.1513,
         ]);
 
-        // Pelanggan 2 (Siti) → ODP Pahlawan 01
         Pelanggan::where('no_pelanggan', 'PLG-20250101-002')->update([
-            'odp_id' => $odp3->id,
-            'lat'    => -6.1340,
-            'lng'    => 106.1615,
+            'odp_id' => $odp4->id,
+            'lat'    => -6.2615,
+            'lng'    => 106.7828,
         ]);
 
-        // Pelanggan 3 (Ahmad) → ODP Cipocok 01
         Pelanggan::where('no_pelanggan', 'PLG-20250101-003')->update([
-            'odp_id' => $odp4->id,
-            'lat'    => -6.1230,
-            'lng'    => 106.1465,
+            'odp_id' => $odp5->id,
+            'lat'    => -6.2638,
+            'lng'    => 106.7843,
         ]);
     }
 }

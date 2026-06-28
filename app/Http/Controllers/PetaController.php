@@ -18,14 +18,27 @@ class PetaController extends Controller
 
     public function semua()
     {
-        $popOlt = PopOlt::all();
-        $odc    = Odc::all();
-        $odp    = Odp::all();
+        $user = auth()->user();
 
-        $pelanggan = Pelanggan::with('paket')
+        $queryPop = PopOlt::query();
+        $queryOdc = Odc::query();
+        $queryOdp = Odp::query();
+        $queryPelanggan = Pelanggan::with('paket')
             ->whereNotNull('lat')
-            ->whereNotNull('lng')
-            ->get()
+            ->whereNotNull('lng');
+
+        if ($user->role === 'admin') {
+            $queryPop->where('daerah', $user->daerah);
+            $queryOdc->where('daerah', $user->daerah);
+            $queryOdp->where('daerah', $user->daerah);
+            $queryPelanggan->where('daerah', $user->daerah);
+        }
+
+        $popOlt = $queryPop->get();
+        $odc    = $queryOdc->get();
+        $odp    = $queryOdp->get();
+
+        $pelanggan = $queryPelanggan->get()
             ->map(function ($p) {
                 // Determine payment status from latest invoice
                 $latestInvoice = $p->invoices()->latest()->first();
@@ -55,26 +68,43 @@ class PetaController extends Controller
 
     public function popOlt()
     {
-        return response()->json(PopOlt::all());
+        $user = auth()->user();
+        $query = PopOlt::query();
+        if ($user->role === 'admin') {
+            $query->where('daerah', $user->daerah);
+        }
+        return response()->json($query->get());
     }
 
     public function odc()
     {
-        return response()->json(Odc::all());
+        $user = auth()->user();
+        $query = Odc::query();
+        if ($user->role === 'admin') {
+            $query->where('daerah', $user->daerah);
+        }
+        return response()->json($query->get());
     }
 
     public function odp()
     {
-        return response()->json(Odp::all());
+        $user = auth()->user();
+        $query = Odp::query();
+        if ($user->role === 'admin') {
+            $query->where('daerah', $user->daerah);
+        }
+        return response()->json($query->get());
     }
 
     public function pelanggan()
     {
-        return response()->json(
-            Pelanggan::with('paket')
-                ->whereNotNull('lat')
-                ->whereNotNull('lng')
-                ->get()
-        );
+        $user = auth()->user();
+        $query = Pelanggan::with('paket')
+            ->whereNotNull('lat')
+            ->whereNotNull('lng');
+        if ($user->role === 'admin') {
+            $query->where('daerah', $user->daerah);
+        }
+        return response()->json($query->get());
     }
 }
