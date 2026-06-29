@@ -1,28 +1,27 @@
 <template>
-    <aside class="w-64 bg-white shadow-md flex flex-col min-h-screen">
-        <div class="p-4 border-b">
+    <aside class="w-64 bg-white dark:bg-gray-800 shadow-md flex flex-col min-h-screen border-r border-gray-200 dark:border-gray-700">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <h1 class="text-xl font-bold" :class="colorClass">ISP Manager</h1>
-            <p class="text-xs text-gray-500">{{ roleLabel }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ roleLabel }}</p>
         </div>
 
         <nav class="flex-1 p-4 space-y-1">
             <Link v-for="item in menuItems" :key="item.route"
                 :href="route(item.route)"
-                class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 text-sm"
-                :class="{ 'bg-gray-100 font-medium': isActive(item.route) }">
+                class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm transition-colors"
+                :class="{ 'bg-gray-100 dark:bg-gray-700 font-medium': isActive(item.route) }">
                 <span>{{ item.icon }}</span>
                 {{ item.label }}
             </Link>
         </nav>
 
-        <div class="p-4 border-t">
-            <Link :href="route('profil')" class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 mb-2">
-                👤 {{ $page.props.auth.user.name }}
-            </Link>
-            <Link :href="route('logout')" method="post" as="button"
-                class="text-sm text-red-600 hover:underline">
-                Logout
-            </Link>
+        <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {{ $page.props.auth.user.name }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+                {{ $page.props.auth.user.daerah ?? 'Semua Daerah' }}
+            </p>
         </div>
     </aside>
 </template>
@@ -54,6 +53,7 @@ const menuItems = computed(() => {
             { icon: '📄', label: 'Invoice', route: 'invoice.index' },
             { icon: '💬', label: 'Template WA', route: 'notifikasi.index' },
             { icon: '👤', label: 'Manajemen User', route: 'superadmin.users.page' },
+            { icon: '📋', label: 'Laporan Keluhan', route: 'superadmin.laporan-keluhan' },
         ]
     }
     if (role.value === 'admin') {
@@ -63,12 +63,15 @@ const menuItems = computed(() => {
             { icon: '📄', label: 'Invoice', route: 'invoice.index' },
             { icon: '💬', label: 'Template WA', route: 'notifikasi.index' },
             { icon: '👤', label: 'Manajemen User', route: 'admin.users' },
+            { icon: '📋', label: 'Laporan Keluhan', route: 'admin.laporan-keluhan' },
         ]
     }
     return [
         { icon: '🏠', label: 'Dashboard', route: 'user.dashboard' },
         { icon: '📦', label: 'Paket Internet', route: 'paket-internet' },
         { icon: '🆘', label: 'Pusat Bantuan', route: 'pusat-bantuan' },
+        { icon: '🏢', label: 'Tentang PT', route: 'tentang' },
+        { icon: '📜', label: 'Syarat & Ketentuan', route: 'syarat-ketentuan' },
     ]
 })
 

@@ -69,4 +69,10 @@ class KeluhanController extends Controller
     {
         return Inertia::render('shared/PusatBantuan');
     }
+
+    // Halaman laporan keluhan (admin & superadmin)
+    public function laporanKeluhan()
+    {
+        return Inertia::render('shared/LaporanKeluhan');
+    }
 }

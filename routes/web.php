@@ -48,6 +48,7 @@ Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmi
     Route::post('/users/tambah-user', [AdminController::class, 'simpanPelanggan'])->name('users.tambah-user.simpan');
     Route::get('/keluhan', [KeluhanController::class, 'index'])->name('keluhan.index');
     Route::put('/keluhan/{id}/status', [KeluhanController::class, 'updateStatus'])->name('keluhan.status');
+    Route::get('/laporan-keluhan', [KeluhanController::class, 'laporanKeluhan'])->name('laporan-keluhan');
 });
 
 // Admin routes
@@ -57,7 +58,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/get-odps', [AdminController::class, 'getOdps'])->name('get-odps');
     Route::get('/stats', [AdminController::class, 'stats'])->name('stats');
     Route::get('/paket', [AdminController::class, 'paket'])->name('paket');
-    Route::get('/laporan-keluhan', [AdminController::class, 'laporanKeluhan'])->name('laporan-keluhan');
     Route::get('/pelanggan/tambah', [AdminController::class, 'formTambahPelanggan'])->name('pelanggan.tambah');
     Route::post('/pelanggan/tambah', [AdminController::class, 'simpanPelanggan'])->name('pelanggan.simpan');
     Route::get('/pelanggan', [AdminController::class, 'pelanggan'])->name('pelanggan');
@@ -71,6 +71,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/users/{id}/aktifkan', [AdminController::class, 'aktifkanUser'])->name('users.aktifkan');
     Route::get('/keluhan', [KeluhanController::class, 'index'])->name('keluhan.index');
     Route::put('/keluhan/{id}/status', [KeluhanController::class, 'updateStatus'])->name('keluhan.status');
+    Route::get('/laporan-keluhan', [KeluhanController::class, 'laporanKeluhan'])->name('laporan-keluhan');
 });
 
 // Peta routes (superadmin + admin)
@@ -126,6 +127,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/paket/list', function () {
         return response()->json(\App\Models\PaketInternet::all());
     })->name('paket.list');
+    Route::get('/tentang', function () {
+        return Inertia::render('shared/TentangPT');
+    })->name('tentang');
+    Route::get('/syarat-ketentuan', function () {
+        return Inertia::render('shared/SyaratKetentuan');
+    })->name('syarat-ketentuan');
 });
 
 Route::middleware(['auth'])->prefix('invoice')->name('invoice.')->group(function () {

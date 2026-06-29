@@ -67,8 +67,8 @@
                                 <td class="py-2">{{ p.daerah }}</td>
                                 <td class="py-2">
                                     <span
-                                        :class="p.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                                        class="inline-block w-20 text-center px-2 py-1 rounded-full text-xs font-medium">
+                                        :class="p.status === 'aktif' ? 'border-green-500 text-green-600' : 'border-red-500 text-red-600'"
+                                        class="inline-block w-20 text-center px-2 py-1 rounded-full text-xs font-medium border bg-white">
                                         {{ p.status }}
                                     </span>
                                 </td>
@@ -76,9 +76,9 @@
                                     <button
                                         @click="p.status === 'aktif' ? matikanKoneksi(p.id) : hidupkanKoneksi(p.id)"
                                         :class="p.status === 'aktif'
-                                            ? 'bg-red-500 hover:bg-red-600'
-                                            : 'bg-green-500 hover:bg-green-600'"
-                                        class="text-xs text-white w-20 py-1 rounded text-center transition-colors duration-150">
+                                            ? 'border-red-500 text-red-500 hover:bg-red-500 hover:text-white'
+                                            : 'border-green-500 text-green-500 hover:bg-green-500 hover:text-white'"
+                                        class="text-xs w-20 py-1 rounded text-center border bg-white transition-colors duration-150">
                                         {{ p.status === 'aktif' ? 'Matikan' : 'Hidupkan' }}
                                     </button>
                                 </td>
