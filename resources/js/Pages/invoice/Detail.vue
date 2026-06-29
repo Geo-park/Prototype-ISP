@@ -79,6 +79,7 @@
                     <p class="text-green-600 font-semibold">✓ Invoice ini sudah lunas</p>
                 </div>
             </div>
+            <PopupSukses v-if="dataSukses" :data="dataSukses" @tutup="selesai" />
         </div>
     </component>
 </template>
@@ -88,6 +89,8 @@ import { ref, computed } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import SuperadminLayout from '@/Layouts/SuperadminLayout.vue'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
+import UserLayout from '@/Layouts/UserLayout.vue'
+import PopupSukses from '@/Components/shared/PopupSukses.vue'
 import axios from 'axios'
 
 const props = defineProps({
@@ -96,10 +99,15 @@ const props = defineProps({
 
 const page = usePage()
 const role = computed(() => page.props.auth.user.role)
-const Layout = computed(() => role.value === 'superadmin' ? SuperadminLayout : AdminLayout)
+const Layout = computed(() => {
+    if (role.value === 'superadmin') return SuperadminLayout
+    if (role.value === 'admin') return AdminLayout
+    return UserLayout
+})
 
 const metodeBayar = ref('QRIS')
 const loading = ref(false)
+const dataSukses = ref(null)
 
 const formatRupiah = (value) => {
     return new Intl.NumberFormat('id-ID', {
@@ -118,14 +126,20 @@ const badgeClass = (status) => ({
 const simulasiBayar = async () => {
     loading.value = true
     try {
-        await axios.post(`/invoice/${props.invoice.id}/simulasi-bayar`, {
+        const res = await axios.post(`/invoice/${props.invoice.id}/simulasi-bayar`, {
             metode: metodeBayar.value,
         })
-        router.reload()
+        dataSukses.value = res.data
     } catch (e) {
         alert('Gagal memproses pembayaran')
     } finally {
         loading.value = false
     }
 }
+
+const selesai = () => {
+    dataSukses.value = null
+    router.reload()
+}
 </script>
+

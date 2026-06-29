@@ -175,4 +175,52 @@ class SuperadminController extends Controller
 
         return response()->json($data);
     }
+
+    public function users()
+    {
+        $users = \App\Models\User::whereIn('role', ['admin', 'user'])
+            ->with('pelanggan')
+            ->get();
+
+        return response()->json($users);
+    }
+
+    public function simpanAdmin(Request $request)
+    {
+        $request->validate([
+            'name'   => 'required|string',
+            'email'  => 'required|email|unique:users,email',
+            'daerah' => 'required|string',
+            'no_wa'  => 'required|string',
+            'alamat' => 'required|string',
+        ]);
+
+        $user = \App\Models\User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => bcrypt('demo1234'),
+            'role'     => 'admin',
+            'daerah'   => $request->daerah,
+            'no_wa'    => $request->no_wa,
+            'alamat'   => $request->alamat,
+            'is_active'=> true,
+        ]);
+
+        return response()->json($user);
+    }
+
+    public function usersPage()
+    {
+        return Inertia::render('superadmin/Users');
+    }
+
+    public function tambahAdminPage()
+    {
+        return Inertia::render('superadmin/TambahAdmin');
+    }
+
+    public function tambahUserPage()
+    {
+        return Inertia::render('superadmin/TambahUser');
+    }
 }

@@ -74,7 +74,7 @@ class InvoiceController extends Controller
 
     public function simulasiBayar(Request $request, $id)
     {
-        $invoice = Invoice::findOrFail($id);
+        $invoice = Invoice::with('pelanggan')->findOrFail($id);
 
         $user = auth()->user();
         if ($user->role === 'user') {
@@ -84,12 +84,10 @@ class InvoiceController extends Controller
             }
         }
 
-        // Expire pending lama
         $invoice->pembayarans()
             ->where('status', 'pending')
             ->update(['status' => 'expired']);
 
-        // Buat pembayaran baru
         $pembayaran = Pembayaran::create([
             'invoice_id' => $invoice->id,
             'tgl_bayar'  => now(),
@@ -99,10 +97,8 @@ class InvoiceController extends Controller
             'status'     => 'success',
         ]);
 
-        // Update status invoice
         $invoice->update(['status' => 'paid']);
 
-        // Generate catatan pajak
         CatatanPajak::create([
             'pembayaran_id'  => $pembayaran->id,
             'pelanggan_id'   => $invoice->pelanggan_id,
@@ -116,8 +112,13 @@ class InvoiceController extends Controller
         ]);
 
         return response()->json([
-            'message'    => 'Pembayaran berhasil',
-            'invoice_id' => $invoice->id,
+            'message'       => 'Pembayaran berhasil',
+            'no_invoice'    => $invoice->no_invoice,
+            'nama_paket'    => $invoice->nama_paket,
+            'metode'        => $request->metode ?? 'QRIS',
+            'subtotal'      => $invoice->subtotal,
+            'nominal_pajak' => $invoice->nominal_pajak,
+            'total'         => $invoice->total,
         ]);
     }
 }

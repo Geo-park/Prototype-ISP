@@ -7,7 +7,8 @@
                     <p class="text-sm text-gray-500">Daerah: {{ daerah }}</p>
                 </div>
                 <button @click="showFilter = !showFilter"
-                    class="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors">
+                    class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+                >
                     {{ showFilter ? 'Tutup Filter' : 'Filter' }}
                 </button>
             </div>
@@ -29,7 +30,7 @@
                 />
                 <div v-else class="flex items-center justify-center h-full bg-gray-100">
                     <div class="text-center">
-                        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600 mx-auto mb-3"></div>
+                        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-3"></div>
                         <p class="text-gray-500 text-sm">Memuat data peta...</p>
                     </div>
                 </div>
@@ -65,19 +66,17 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { usePage } from '@inertiajs/vue3'
 import axios from 'axios'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import PetaJaringan from '@/Components/peta/PetaJaringan.vue'
 import FilterPanel from '@/Components/peta/FilterPanel.vue'
 
-const page = usePage()
-const daerah = computed(() => page.props.auth.user.daerah ?? '-')
-
+// Loading state
 const loading = ref(true)
 const showFilter = ref(false)
 const data = ref({ pop_olt: [], odc: [], odp: [], pelanggan: [] })
 
+// Filters – admin view automatically filters by the admin's assigned daerah.
 const filters = ref({
     showPopOlt: true,
     showOdc: true,
@@ -85,10 +84,23 @@ const filters = ref({
     showPelanggan: true,
     statusKoneksi: 'semua',
     statusBayar: 'semua',
+    // The daerah filter is derived from the authenticated admin user.
+    daerah: ''
 })
+
+// Fetch admin daerah from a lightweight endpoint (you may create this endpoint if not existing).
+const fetchAdminDaerah = async () => {
+    try {
+        const res = await axios.get('/admin/daerah')
+        filters.value.daerah = res.data.daerah || ''
+    } catch (e) {
+        console.error('Failed to fetch admin daerah', e)
+    }
+}
 
 const filteredPelanggan = computed(() => {
     return data.value.pelanggan.filter(p => {
+        if (filters.value.daerah && p.daerah !== filters.value.daerah) return false
         if (filters.value.statusKoneksi !== 'semua' && p.status_koneksi !== filters.value.statusKoneksi) return false
         if (filters.value.statusBayar !== 'semua') {
             if (filters.value.statusBayar === 'lunas' && p.status_pembayaran !== 'paid') return false
@@ -103,8 +115,8 @@ const updateFilter = (key, value) => {
 }
 
 onMounted(async () => {
+    await fetchAdminDaerah()
     try {
-        // Backend sudah filter per daerah admin otomatis
         const res = await axios.get('/peta/semua')
         data.value = res.data
     } catch (err) {

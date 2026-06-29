@@ -159,4 +159,87 @@ class UserController extends Controller
 
         return response()->json($pajak);
     }
+
+    public function beliPaket(Request $request)
+    {
+        $request->validate([
+            'paket_id' => 'required|exists:paket_internet,id',
+            'metode'   => 'required|in:QRIS,virtual_account,transfer',
+        ]);
+
+        $user      = auth()->user();
+        $pelanggan = Pelanggan::with('paket')->where('user_id', $user->id)->first();
+        $paket     = \App\Models\PaketInternet::findOrFail($request->paket_id);
+
+        // Hitung nominal
+        $subtotal     = $paket->harga;
+        $persenPajak  = $paket->persen_pajak;
+        $nominalPajak = $subtotal * $persenPajak / 100;
+        $total        = $subtotal + $nominalPajak;
+
+        // Buat invoice
+        $invoice = \App\Models\Invoice::create([
+            'no_invoice'      => 'INV-' . now()->format('Y') . '-' . str_pad(\App\Models\Invoice::count() + 1, 3, '0', STR_PAD_LEFT),
+            'pelanggan_id'    => $pelanggan->id,
+            'paket_id'        => $paket->id,
+            'periode'         => now()->format('Y-m'),
+            'tgl_invoice'     => now()->toDateString(),
+            'tgl_jatuh_tempo' => now()->addDays(10)->toDateString(),
+            'nama_paket'      => $paket->nama,
+            'bandwidth'       => $paket->bandwidth_down . ' ' . $paket->satuan,
+            'subtotal'        => $subtotal,
+            'persen_pajak'    => $persenPajak,
+            'nominal_pajak'   => $nominalPajak,
+            'total'           => $total,
+            'status'          => 'pending',
+        ]);
+
+        // Expire pembayaran pending lama
+        $invoice->pembayarans()
+            ->where('status', 'pending')
+            ->update(['status' => 'expired']);
+
+        // Buat pembayaran
+        $pembayaran = \App\Models\Pembayaran::create([
+            'invoice_id' => $invoice->id,
+            'tgl_bayar'  => now(),
+            'metode'     => $request->metode,
+            'jumlah'     => $total,
+            'referensi'  => 'SIM-' . now()->format('YmdHis'),
+            'status'     => 'success',
+        ]);
+
+        // Update invoice jadi paid
+        $invoice->update(['status' => 'paid']);
+
+        // Ganti paket pelanggan
+        $pelanggan->update([
+            'paket_id'        => $paket->id,
+            'tgl_aktivasi'    => now()->toDateString(),
+            'tgl_jatuh_tempo' => now()->addDays($paket->masa_aktif)->toDateString(),
+        ]);
+
+        // Generate catatan pajak
+        \App\Models\CatatanPajak::create([
+            'pembayaran_id'  => $pembayaran->id,
+            'pelanggan_id'   => $pelanggan->id,
+            'no_faktur'      => 'FKT-' . now()->format('Y') . '-' . str_pad(\App\Models\CatatanPajak::count() + 1, 3, '0', STR_PAD_LEFT),
+            'tgl_faktur'     => now()->toDateString(),
+            'subtotal'       => $subtotal,
+            'persen_pajak'   => $persenPajak,
+            'nominal_pajak'  => $nominalPajak,
+            'total'          => $total,
+            'dikirim_mekari' => false,
+        ]);
+
+        return response()->json([
+            'message'       => 'Pembayaran berhasil',
+            'no_invoice'    => $invoice->no_invoice,
+            'nama_paket'    => $paket->nama,
+            'metode'        => $request->metode,
+            'subtotal'      => $subtotal,
+            'nominal_pajak' => $nominalPajak,
+            'total'         => $total,
+        ]);
+    }
 }

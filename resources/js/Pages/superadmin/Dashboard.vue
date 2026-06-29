@@ -155,10 +155,13 @@
                     <ul class="space-y-2">
                         <li v-for="laporan in laporanKeluhan" :key="laporan.id"
                             class="text-sm border-b pb-2 flex justify-between items-center">
-                            <span>{{ laporan.judul }} — {{ laporan.pelanggan }}</span>
+                            <div>
+                                <p class="font-medium">{{ laporan.judul }}</p>
+                                <p class="text-gray-500 text-xs">{{ laporan.user?.name }} — {{ laporan.created_at }}</p>
+                            </div>
                             <button @click="bukaModal(laporan)"
-                                class="text-xs bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
-                                open
+                                class="text-xs bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600 shrink-0">
+                                {{ laporan.status }}
                             </button>
                         </li>
                     </ul>
@@ -174,7 +177,7 @@
                         <div class="space-y-2 text-sm">
                             <p><span class="text-gray-500">ID:</span> #{{ modalLaporan.id }}</p>
                             <p><span class="text-gray-500">Judul:</span> {{ modalLaporan.judul }}</p>
-                            <p><span class="text-gray-500">Pelanggan:</span> {{ modalLaporan.pelanggan }}</p>
+                            <p><span class="text-gray-500">Pengirim:</span> {{ modalLaporan.user?.name }}</p>
                             <p><span class="text-gray-500">Status:</span>
                                 <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs ml-1">
                                     {{ modalLaporan.status }}
@@ -182,14 +185,20 @@
                             </p>
                             <p><span class="text-gray-500">Deskripsi:</span> {{ modalLaporan.deskripsi }}</p>
                         </div>
-                        <div class="mt-4 flex gap-2">
-                            <button @click="modalLaporan = null"
-                                class="flex-1 bg-gray-100 text-gray-700 py-2 rounded hover:bg-gray-200 text-sm">
-                                Tutup
+                        <div class="mt-4 space-y-2">
+                            <button @click="updateStatus(modalLaporan.id, 'proses')"
+                                v-if="modalLaporan.status === 'open'"
+                                class="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 text-sm">
+                                Tandai Sedang Diproses
+                            </button>
+                            <button @click="updateStatus(modalLaporan.id, 'selesai')"
+                                v-if="modalLaporan.status !== 'selesai'"
+                                class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 text-sm">
+                                Tandai Selesai
                             </button>
                             <button @click="modalLaporan = null"
-                                class="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700 text-sm">
-                                Tandai Selesai
+                                class="w-full bg-gray-100 text-gray-700 py-2 rounded hover:bg-gray-200 text-sm">
+                                Tutup
                             </button>
                         </div>
                     </div>
@@ -273,10 +282,18 @@ const hidupkanKoneksi = async (id) => {
     }
 }
 
+const updateStatus = async (id, status) => {
+    await axios.put(`/superadmin/keluhan/${id}/status`, { status })
+    const index = laporanKeluhan.value.findIndex(l => l.id === id)
+    if (index !== -1) laporanKeluhan.value[index].status = status
+    modalLaporan.value = null
+}
+
 onMounted(async () => {
     try {
-        const [res] = await Promise.all([
-            axios.get('/superadmin/dashboard-data')
+        const [res, keluhanRes] = await Promise.all([
+            axios.get('/superadmin/dashboard-data'),
+            axios.get('/superadmin/keluhan'),
         ])
         const d = res.data
 
@@ -302,7 +319,7 @@ onMounted(async () => {
         invoiceTerbaru.value = d.invoice_terbaru
         aktivitasLog.value = d.aktivitas_log
         pelanggan.value = d.pelanggan
-        laporanKeluhan.value = d.laporan_keluhan
+        laporanKeluhan.value = keluhanRes.data
         statistikDaerah.value = d.statistik_daerah
     } catch (e) {
         console.error('Gagal memuat data dashboard superadmin:', e)

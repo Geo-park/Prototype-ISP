@@ -16,7 +16,9 @@
         </nav>
 
         <div class="p-4 border-t">
-            <p class="text-sm text-gray-600 mb-2">{{ $page.props.auth.user.name }}</p>
+            <Link :href="route('profil')" class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 mb-2">
+                👤 {{ $page.props.auth.user.name }}
+            </Link>
             <Link :href="route('logout')" method="post" as="button"
                 class="text-sm text-red-600 hover:underline">
                 Logout
@@ -51,6 +53,7 @@ const menuItems = computed(() => {
             { icon: '🗺️', label: 'Peta Jaringan', route: 'superadmin.peta' },
             { icon: '📄', label: 'Invoice', route: 'invoice.index' },
             { icon: '💬', label: 'Template WA', route: 'notifikasi.index' },
+            { icon: '👤', label: 'Manajemen User', route: 'superadmin.users.page' },
         ]
     }
     if (role.value === 'admin') {
@@ -59,10 +62,13 @@ const menuItems = computed(() => {
             { icon: '🗺️', label: 'Peta Jaringan', route: 'admin.peta' },
             { icon: '📄', label: 'Invoice', route: 'invoice.index' },
             { icon: '💬', label: 'Template WA', route: 'notifikasi.index' },
+            { icon: '👤', label: 'Manajemen User', route: 'admin.users' },
         ]
     }
     return [
         { icon: '🏠', label: 'Dashboard', route: 'user.dashboard' },
+        { icon: '📦', label: 'Paket Internet', route: 'paket-internet' },
+        { icon: '🆘', label: 'Pusat Bantuan', route: 'pusat-bantuan' },
     ]
 })
 

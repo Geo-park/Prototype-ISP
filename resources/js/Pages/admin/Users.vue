@@ -1,0 +1,181 @@
+<template>
+    <AdminLayout>
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Manajemen User</h1>
+                <button @click="bukaModalTambah"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+                    + Tambah User
+                </button>
+            </div>
+
+            <!-- Tabel User -->
+            <div class="bg-white rounded-lg shadow">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left border-b bg-gray-50">
+                            <th class="p-4">Nama</th>
+                            <th class="p-4">Email</th>
+                            <th class="p-4">Role</th>
+                            <th class="p-4">Daerah</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="u in users" :key="u.id" class="border-b hover:bg-gray-50">
+                            <td class="p-4">{{ u.name }}</td>
+                            <td class="p-4">{{ u.email }}</td>
+                            <td class="p-4">
+                                <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                                    {{ u.role }}
+                                </span>
+                            </td>
+                            <td class="p-4">{{ u.daerah }}</td>
+                            <td class="p-4">
+                                <span :class="u.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                                    class="px-2 py-1 rounded-full text-xs">
+                                    {{ u.is_active ? 'Aktif' : 'Nonaktif' }}
+                                </span>
+                            </td>
+                            <td class="p-4 space-x-2">
+                                <button @click="bukaModalEdit(u)"
+                                    class="text-xs bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
+                                    Edit
+                                </button>
+                                <button v-if="u.is_active" @click="nonaktifkan(u.id)"
+                                    class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                                    Nonaktifkan
+                                </button>
+                                <button v-else @click="aktifkan(u.id)"
+                                    class="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
+                                    Aktifkan
+                                </button>
+                            </td>
+                        </tr>
+                        <tr v-if="users.length === 0">
+                            <td colspan="6" class="p-4 text-center text-gray-400">Tidak ada user</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal Tambah/Edit User -->
+            <div v-if="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="font-bold text-lg">{{ modalMode === 'tambah' ? 'Tambah User' : 'Edit User' }}</h2>
+                        <button @click="modal = false" class="text-gray-400 hover:text-gray-600">✕</button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                            <input v-model="form.name" type="text"
+                                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input v-model="form.email" type="email"
+                                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Daerah</label>
+                            <input v-model="form.daerah" type="text"
+                                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div v-if="modalMode === 'tambah'">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                            <select v-model="form.role"
+                                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="user">User</option>
+                            </select>
+                        </div>
+                        <p class="text-xs text-gray-400" v-if="modalMode === 'tambah'">
+                            Password default: demo1234
+                        </p>
+                    </div>
+
+                    <div class="mt-4 flex gap-2">
+                        <button @click="modal = false"
+                            class="flex-1 bg-gray-100 text-gray-700 py-2 rounded hover:bg-gray-200 text-sm">
+                            Batal
+                        </button>
+                        <button @click="simpan" :disabled="loading"
+                            class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 text-sm disabled:opacity-50">
+                            {{ loading ? 'Menyimpan...' : 'Simpan' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import axios from 'axios'
+
+const users = ref([])
+const modal = ref(false)
+const modalMode = ref('tambah')
+const loading = ref(false)
+const editId = ref(null)
+
+const form = ref({
+    name: '',
+    email: '',
+    daerah: '',
+    role: 'user',
+})
+
+onMounted(async () => {
+    const res = await axios.get('/admin/users')
+    users.value = res.data
+})
+
+const bukaModalTambah = () => {
+    modalMode.value = 'tambah'
+    form.value = { name: '', email: '', daerah: '', role: 'user' }
+    modal.value = true
+}
+
+const bukaModalEdit = (u) => {
+    modalMode.value = 'edit'
+    editId.value = u.id
+    form.value = { name: u.name, email: u.email, daerah: u.daerah, role: u.role }
+    modal.value = true
+}
+
+const simpan = async () => {
+    loading.value = true
+    try {
+        if (modalMode.value === 'tambah') {
+            const res = await axios.post('/admin/users/tambah', form.value)
+            users.value.push(res.data)
+        } else {
+            const res = await axios.put(`/admin/users/${editId.value}`, form.value)
+            const index = users.value.findIndex(u => u.id === editId.value)
+            if (index !== -1) users.value[index] = res.data
+        }
+        modal.value = false
+    } catch (e) {
+        alert('Gagal menyimpan data')
+    } finally {
+        loading.value = false
+    }
+}
+
+const nonaktifkan = async (id) => {
+    await axios.post(`/admin/users/${id}/nonaktifkan`)
+    const index = users.value.findIndex(u => u.id === id)
+    if (index !== -1) users.value[index].is_active = false
+}
+
+const aktifkan = async (id) => {
+    await axios.post(`/admin/users/${id}/aktifkan`)
+    const index = users.value.findIndex(u => u.id === id)
+    if (index !== -1) users.value[index].is_active = true
+}
+</script>
