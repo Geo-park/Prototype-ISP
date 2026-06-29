@@ -13,6 +13,12 @@ class PetaController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        
+        if ($user->role === 'admin') {
+            return Inertia::render('admin/Peta');
+        }
+        
         return Inertia::render('superadmin/Peta');
     }
 

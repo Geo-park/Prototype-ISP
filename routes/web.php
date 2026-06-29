@@ -52,6 +52,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/pelanggan', [AdminController::class, 'pelanggan'])->name('pelanggan');
     Route::post('/koneksi/matikan/{id}', [AdminController::class, 'matikanKoneksi'])->name('koneksi.matikan');
     Route::post('/koneksi/hidupkan/{id}', [AdminController::class, 'hidupkanKoneksi'])->name('koneksi.hidupkan');
+    Route::get('/peta', [PetaController::class, 'index'])->name('peta');
 });
 
 // Peta routes (superadmin + admin)
@@ -80,14 +81,9 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
     Route::get('/riwayat-pajak', [UserController::class, 'riwayatPajak'])->name('riwayat-pajak');
 });
 
-// Invoice management routes (restricted to admin & superadmin)
-Route::middleware(['auth', 'admin'])->prefix('invoice')->name('invoice.')->group(function () {
-    Route::get('/', [InvoiceController::class, 'index'])->name('index');
-    Route::post('/', [InvoiceController::class, 'store'])->name('store');
-});
-
-// Invoice detail & payment simulation (accessible by both admins and the customer who owns it)
 Route::middleware(['auth'])->prefix('invoice')->name('invoice.')->group(function () {
+    Route::middleware(['admin'])->get('/', [InvoiceController::class, 'index'])->name('index');
+    Route::middleware(['admin'])->post('/', [InvoiceController::class, 'store'])->name('store');
     Route::get('/{id}', [InvoiceController::class, 'show'])->name('show');
     Route::post('/{id}/simulasi-bayar', [InvoiceController::class, 'simulasiBayar'])->name('simulasi-bayar');
 });

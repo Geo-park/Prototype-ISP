@@ -56,6 +56,7 @@ const menuItems = computed(() => {
     if (role.value === 'admin') {
         return [
             { icon: '📊', label: 'Dashboard', route: 'admin.dashboard' },
+            { icon: '🗺️', label: 'Peta Jaringan', route: 'admin.peta' },
             { icon: '📄', label: 'Invoice', route: 'invoice.index' },
             { icon: '💬', label: 'Template WA', route: 'notifikasi.index' },
         ]
