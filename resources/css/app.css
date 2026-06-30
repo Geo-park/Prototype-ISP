@@ -1,3 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ─── LJN Design System ─── */
+:root {
+    --ljn-navy:      #0f1b3d;
+    --ljn-blue:      #1a3a8f;
+    --ljn-blue-mid:  #1e4db7;
+    --ljn-blue-light:#3b82f6;
+    --ljn-sidebar:   #1a2340;
+    --ljn-sidebar-hover: #243059;
+    --ljn-sidebar-active: #1e4db7;
+}
+
+/* ─── Base ─── */
+* { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+/* ─── Login animated background ─── */
+.ljn-bg {
+    background: linear-gradient(135deg, #c8d8f0 0%, #dce8f8 30%, #e8f0fc 60%, #cdd9f0 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.ljn-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 800px 600px at 20% 50%, rgba(59,130,246,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 80% 20%, rgba(30,77,183,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 500px 500px at 60% 80%, rgba(147,197,253,0.20) 0%, transparent 65%);
+    animation: ljn-pulse 8s ease-in-out infinite alternate;
+}
+
+.ljn-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(59,130,246,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.07) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+/* flowing lines */
+.ljn-line {
+    position: absolute;
+    border-radius: 9999px;
+    opacity: 0.25;
+    filter: blur(1px);
+    animation: ljn-flow 12s ease-in-out infinite;
+}
+.ljn-line:nth-child(1) {
+    width: 500px; height: 2px;
+    background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+    top: 30%; left: -100px;
+    animation-delay: 0s;
+}
+.ljn-line:nth-child(2) {
+    width: 350px; height: 1px;
+    background: linear-gradient(90deg, transparent, #93c5fd, transparent);
+    top: 55%; left: -50px;
+    animation-delay: 3s;
+}
+.ljn-line:nth-child(3) {
+    width: 600px; height: 2px;
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+    top: 70%; left: -150px;
+    animation-delay: 6s;
+}
+.ljn-line:nth-child(4) {
+    width: 280px; height: 1px;
+    background: linear-gradient(90deg, transparent, #bfdbfe, transparent);
+    top: 20%; right: -50px;
+    transform: rotate(30deg);
+    animation-delay: 2s;
+    animation-direction: reverse;
+}
+
+@keyframes ljn-pulse {
+    0%   { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 1;   transform: scale(1.05); }
+}
+
+@keyframes ljn-flow {
+    0%   { transform: translateX(0) scaleX(0.8);   opacity: 0.15; }
+    50%  { transform: translateX(200px) scaleX(1);  opacity: 0.35; }
+    100% { transform: translateX(500px) scaleX(0.8); opacity: 0; }
+}
+
+/* ─── Sidebar dark ─── */
+.ljn-sidebar {
+    background: var(--ljn-sidebar);
+}
+
+/* ─── Scrollbar thin ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ─── Stat card hover lift ─── */
+.stat-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.10);
+}
+
+/* ─── Table row hover ─── */
+.ljn-table tr:hover td {
+    background: #f0f6ff;
+}
