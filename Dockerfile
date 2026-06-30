@@ -1,13 +1,13 @@
-FROM richarvey/nginx-php-fpm:latest
+FROM webdevops/php-nginx:8.3-alpine
+
+# Set environment variables
+ENV WEB_DOCUMENT_ROOT=/app/public
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Salin semua file proyek ke container
-COPY . /var/www/html
+COPY . /app
 
-# Konfigurasi environment image
-ENV WEBROOT /var/www/html/public
-ENV COMPOSER_ALLOW_SUPERUSER 1
-
-# Install dependency PHP (composer)
+# Jalankan composer install
 RUN composer install --no-dev --optimize-autoloader
 
 # Expose port default Nginx
