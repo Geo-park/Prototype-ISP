@@ -4,6 +4,9 @@ FROM webdevops/php-nginx:8.3-alpine
 ENV WEB_DOCUMENT_ROOT=/app/public
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
+# Tentukan working directory di dalam container
+WORKDIR /app
+
 # Salin semua file proyek ke container
 COPY . /app
 
